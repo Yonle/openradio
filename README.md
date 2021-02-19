@@ -21,5 +21,16 @@ When there's no argument provided, openradio will listen to port 4600 and Readin
 openradio [PORT] [DIRECTORY PATH]
 ```
 
+## Command
+```
+.skip - Skip & Play other song
+.np - Showing Current playing song name
+.q / .ls - Showing song name in current folder
+.p - Skip & play provided song number
+.stop - Stop the player
+.logs - Show HTTP Traffic Logs
+.clearlogs - Clear logs
+.sink - Show all Sink name
+```
 ## Community
 [Discord](https://discord.gg/9S3ZCDR)
