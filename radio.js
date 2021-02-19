@@ -5,8 +5,8 @@ const ffprobe = require("node-ffprobe");
 const http = require("http");
 const fs = require("fs");
 var sink = new Map();
-var port = process.argv.slice(2)[0];
-var dirname = process.argv.slice(3)[0];
+var port = process.argv.slice(2)[0]||4600;
+var dirname = process.argv.slice(3)[0]||process.cwd();
 var stream;var np;var readable;var logs = [];var songnum = 0;
 
 process.title = "OpenRadio";
@@ -24,9 +24,9 @@ const server = http.createServer((req, res) => {
 		logs.push(`[${Date()}] Sink (${id}) Disconnected.`);
 		sink.delete(id);
 	});
-}).listen(port||4600, () => {
-	console.log("---> Radio started at port:", port||4600);
-	console.log("---> Send request to http://127.0.0.1:"+port||4600+" to Start radio");
+}).listen(port, () => {
+	console.log("---> Radio started at port:", port);
+	console.log("---> Send request to http://127.0.0.1:"+port+" to Start radio");
 	console.log("---> Or type command to manage audio");
 	console.log("---> Or Press Enter to Play the radio stadion in Background.");
 	console.log("\nFor command list, Type `.help`");
@@ -37,7 +37,7 @@ const server = http.createServer((req, res) => {
 const Fs = require('fs');
 const { extname } = require('path');
 
-const _readDir = () => Fs.readdirSync(dirname||process.cwd(), { withFileTypes: true });
+const _readDir = () => Fs.readdirSync(dirname, { withFileTypes: true });
 
 const _isMp3 = item => item.isFile && extname(item.name) === '.mp3';
 
