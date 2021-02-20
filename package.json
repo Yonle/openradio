@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A package that can be used to create your own livestream radio. Very easy to use for beginner.",
   "main": "index.js",
   "scripts": {

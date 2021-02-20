@@ -59,18 +59,21 @@ async function play(n) {
 			filename = song[0];
 			songnum = 1;
 		}
-		ffprobe(filename).then(async ({ streams }) => {
-//			console.log("Bitrate:", streams[0]["bit_rate"]);
-			stream = new Throttle(streams[0]["bit_rate"] / 8);
+		ffprobe(filename).then(async ({ format }) => {
+			var bps = format.bit_rate / 8;
+
+			stream = new Throttle(bps);
 			stream.on("data", (chunk) => {
 				sink.forEach((s) => {
 					s.write(chunk);
 				});
 			});
+
 			stream.on("end", () => {
 				if (!stream) return;
 				if (!stream.stopped) return play();
 			});
+
 			readable = fs.createReadStream(filename).pipe(stream);
 			process.stdout.cursorTo(0);
 			process.stdout.clearLine(0);
@@ -142,18 +145,38 @@ process.stdin.on("data", (data) => {
 		} else if (command === "clearlogs") {
 			logs = [];
 		} else if (command === "sink") {
-			a = 1;
-			console.log("--------------------- Sink Manager -");
-			console.log("--- ID -----------------------------");
-			sink.forEach((res, name) => {
-				console.log(`${a}. ${name}`);
-				a++
-			});
-			console.log("------------------------------------\nTotal Sink:", sink.size);
+			a = 1;var args = str.split(" ").slice(1).join(' ');
+			if (!args) {
+				console.log("--------------------- Sink Manager -");
+				console.log("--- ID -----------------------------");
+				sink.forEach((res, name) => {
+					console.log(`${a}. ${name}`);
+					a++
+				});
+				console.log("------------------------------------\nTotal Sink:", sink.size);
+				console.log("To remove sink ID, Execute `.sink remove <sink id>`");
+			} else {
+				if (args.startsWith("remove")) {
+					var id = args.split(" ").slice(1).join(" ");
+					if (!id) {
+						console.log("Usage: .sink remove <sink id>");
+					} else {
+						var res = sink.get(id);
+						if (!res) {
+							console.log("There's no Sink ID", res);
+						} else {
+							res.end();
+							sink.delete(id);
+							console.log("--> Removed Sink", id);
+							console.log("Total Sink:", sink.size);
+						}
+					}
+				}
+			}
 		}
 	}
 	console.log("");
 	process.stdout.write("Command > ");
 });
 
-module.exports = "This package is not yet available for the module. Please use the CLI version or use openradio with exec.";
+module.exports = "We are not ready for used as Module. Please use the CLI version or use openradio with exec.";
