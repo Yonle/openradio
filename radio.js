@@ -73,13 +73,25 @@ async function play(n) {
 				if (!stream) return;
 				if (!stream.stopped) return play();
 			});
-
-			readable = fs.createReadStream(filename).pipe(stream);
+			// Convert music files
+			var readable = fs.createReadStream(dirname+"/"+filename);
+			fs.createReadStream(dirname+"/"+filename).pipe(stream);
+		try {
 			process.stdout.cursorTo(0);
 			process.stdout.clearLine(0);
+		} catch (error) {}
 			console.log("--> Now Playing:", `[${songnum}] ${filename}`);
 			np = filename;
 			process.stdout.write("Command > ");
+		}).catch(e => {
+		try {
+                        process.stdout.cursorTo(0);
+                        process.stdout.clearLine(0);
+                } catch (error) {}
+			logs.push(e);
+			console.log("--> Seems like we got some error with one of your file. Skipping...");
+			songnum++;
+			play();
 		});
 }
 
