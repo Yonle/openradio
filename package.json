@@ -1,0 +1,41 @@
+{
+  "name": "openradio",
+  "version": "0.0.6",
+  "description": "A package that can be used to create your own livestream radio. Very easy to use for beginner.",
+  "main": "./core",
+  "scripts": {
+    "test": "node ./core"
+  },
+  "bin": {
+    "openradio": "radio.js"
+  },
+  "author": "Yonle",
+  "license": "Apache License 2.0",
+  "dependencies": {
+    "node-ffprobe": "^3.0.0",
+    "prism-media": "^1.2.7",
+    "throttle": "^1.0.3"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yonle/openradio.git"
+  },
+  "keywords": [
+    "openradio",
+    "radio",
+    "livestream",
+    "radiostadion",
+    "stadion",
+    "live",
+    "javascript",
+    "stream",
+    "radiofm",
+    "fm",
+    "audio",
+    "mp3"
+  ],
+  "bugs": {
+    "url": "https://github.com/Yonle/openradio/issues"
+  },
+  "homepage": "https://github.com/Yonle/openradio#readme"
+}
