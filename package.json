@@ -1,18 +1,18 @@
 {
   "name": "openradio",
-  "version": "0.0.6",
-  "description": "A package that can be used to create your own livestream radio. Very easy to use for beginner.",
+  "version": "0.0.9",
+  "description": "A package that can be used to create your own livestream radio.",
   "main": "./core",
   "scripts": {
     "test": "node ./core"
   },
   "bin": {
-    "openradio": "radio.js"
+    "openradio": "./lib/cli.js"
   },
   "author": "Yonle",
-  "license": "Apache License 2.0",
+  "license": "Apache-2.0",
   "dependencies": {
-    "node-ffprobe": "^3.0.0",
+    "fluent-ffmpeg": "^2.1.2",
     "prism-media": "^1.2.7",
     "throttle": "^1.0.3"
   },
