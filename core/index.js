@@ -1,6 +1,7 @@
 // Openradio Core
 const ffprobe = require("node-ffprobe");
 const events = require("events");
+const Throttle = require("throttle");
 
 function OpenRadio_Core () {
 
