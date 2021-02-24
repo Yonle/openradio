@@ -1,36 +1,37 @@
 # openradio
-A package that can be used to create your own livestream radio. Very easy to use for beginner.
+A package that can be used to create your own livestream radio.
 
-## Install
+## Installation
+Before installing OpenRadio, You must have **ffmpeg** installed at your system.
 ```bash
+# OpenRadio CLI Installation
 npm install -g openradio
+# OpenRadio Core Installation
+npm install openradio
 ```
-**NOTE:** You must have ffmpeg installed.
-## Example
+# Example
+```js
+const openradio = require("openradio");
+const player = openradio();
+
+player.play(fs.createReadStream("audio.mp3"));
+// After this function, Do player.pipe(writestream)
+// Please notice that this is not regular readstream.
+```
+
+#### For OpenRadio CLI
 ```bash
-# Go to your directory that contain .mp3 files.
+# Go to some directory that contain mp3 files....
 cd /home/Yonle/Music
-
-# Start the Server
+# Start the radio
 openradio
+# You can also Listen to another Port
+openradio 8080
 ```
+## Useful Link
+- [GitHub](https://github.com/Yonle/openradio)
+- [Docs](https://github.com/Yonle/openradio/tree/radio/docs)
+- [Example](https://github.com/Yonle/openradio/tree/radio/example)
 
-## Usage
-When there's no argument provided, openradio will listen to port 4600 and Reading your current Directory files.
-```bash
-openradio [PORT] [DIRECTORY PATH]
-```
-
-## Command
-```
-.skip - Skip & Play other song
-.np - Showing Current playing song name
-.q / .ls - Showing song name in current folder
-.p - Skip & play provided song number
-.stop - Stop the player
-.logs - Show HTTP Traffic Logs
-.clearlogs - Clear logs
-.sink - Show all Sink name
-```
 ## Community
 [Discord](https://discord.gg/9S3ZCDR)
