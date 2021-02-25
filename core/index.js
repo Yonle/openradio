@@ -32,7 +32,17 @@ function OpenRadio_Core () {
                                                 if (err) {
                                                         bps = 128000 / 8;
                                                 } else {
-                                                        bps = data.streams[0].bit_rate / 8;
+                                                        var bitrate = data.format.bit_rate;
+                                                        if (!bitrate) {
+                                                                if (data.streams.length === 0) {
+                                                                        bitrate = data.format.bit_rate;
+                                                                } else if (!data.format) {
+                                                                        bitrate = data.streams[0].bit_rate
+                                                                } else {
+                                                                        bitrate = 128000;
+                                                                }
+                                                        }
+                                                        bps = bitrate / 8;
                                                 }
                                         })
                                 }
