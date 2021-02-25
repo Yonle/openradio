@@ -13,7 +13,6 @@
   "license": "Apache-2.0",
   "dependencies": {
     "node-ffprobe": "^3.0.0",
-    "prism-media": "^1.2.7",
     "throttle": "^1.0.3"
   },
   "repository": {
