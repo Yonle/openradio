@@ -5,7 +5,7 @@ const events = require("events");
 
 function convert() {
     return new ffmpeg({
-        args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2"],
+        args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
     });
 }
 
@@ -29,7 +29,7 @@ function OpenRadio_Core() {
             return new Error("BytePerSecond is Deprecated.");
         }
 
-        stream = readable.pipe(convert()).pipe(new Throttle(16000));
+        stream = readable.pipe(convert()).pipe(new Throttle(24000));
         stream.on("data", (chunk) => {
             Core.emit("data", chunk);
             sink.forEach((dest, id) => {
