@@ -23,7 +23,7 @@ Main Function of OpenRadio Core for creating new player __(Loaded from `require(
 ### `player.play`
 A function for playing a song from provided readstream. Some of their parameter is required. They are:
   - `ReadStream` (Required) for reading stream.
-  - `BPS` Abbreviation of `byte-per-second`, This parameter is used to transfer buffers per second to the client.
+  - ~~`BPS` Abbreviation of `byte-per-second`, This parameter is used to transfer buffers per second to the client.~~ **Deprecated**.
 ### `player.sink`
 Some object variable that returns `Map()` for managing sink/WriteStream. `player.sink.deleteAll` function is for deleteing all WriteStream inside sink Map.
 
