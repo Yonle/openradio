@@ -64,7 +64,7 @@ var manager = {};
 
 function convert() {
 	return new ffmpeg({
-		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2"],
+		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192", "-map", "0:a", "-map_metadata", "-1"],
 	});
 }
 
