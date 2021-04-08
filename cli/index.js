@@ -154,8 +154,9 @@ process.stdin.on("data", (data) => {
         } else if (command === "skip") {
             if (!stream) return console.log("Nothing Playing.");
             stream.playing = false;
-            stream.end();
-            return console.log("->> Skipping " + "[" + songnum + "] " + np + "....");
+            stream.stopped = true;
+            stream.destroy();
+            return play();
         } else if (command === "np") {
             if (!np) return console.log("Nothing Playing.");
             console.log("############### Now Playing ###############\n");
