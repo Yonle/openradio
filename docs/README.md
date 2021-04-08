@@ -45,8 +45,11 @@ Some player object statement for knows that the radio player is playing a song.
 A function for writting a incomming buffer from radio player. Returns Writable Stream ID for managing sink. 
 
 <center>
+
 <h1>Caution</h1>
+
 If you want skipping a song, Do not do this:
+
 ```js
 // Your 1st Broadcast
 player.play(....);
@@ -54,7 +57,9 @@ player.play(....);
 // Skipping? DO NOT DO THIS
 player.play(....);
 ```
+
 Do this:
+
 ```js
 // Your 1st Broadcast
 player.play(....);
