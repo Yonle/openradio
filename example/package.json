@@ -3,7 +3,7 @@
   "description": "Openradio server demo",
   "version": "0.0.0",
   "devDependencies": {
-    "openradio": "1.0.2",
+    "openradio": "latest",
     "http": "latest"
   },
   "scripts": {
