@@ -46,7 +46,7 @@ function OpenRadio_Core() {
         });
 
         stream.on("end", () => {
-            CoreEvent.emit("end", null);
+            Core.emit("end", null);
             Core.ended = true;
             Core.playing = false;
             Core.end = null;
