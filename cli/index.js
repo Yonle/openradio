@@ -116,7 +116,9 @@ async function play(n) {
 		stream.playing = true;
         stream.on("end", () => {
             if (!stream) return;
-            if (!stream.stopped) return play();
+            if (stream.stopped) return;
+            stream.playing = false;
+            play();
         });
 
 	stream.on('error', err => {
@@ -183,10 +185,11 @@ process.stdin.on("data", (data) => {
                 return process.stdout.write("Command > ");
             }
             if (!stream) return play(songnumber);
-            stream.stopped = true;
             stream.playing = false;
-            stream.end(() => play(songnumber));
-			stream = null;
+            stream.stopped = true;
+            stream.end();
+            play(songnumber);
+            stream = null;
             return;
         } else if (command === "stop") {
             stream.stopped = true;
