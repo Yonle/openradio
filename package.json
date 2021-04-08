@@ -7,7 +7,8 @@
     "test": "node ./core"
   },
   "bin": {
-    "openradio": "./cli/index.js"
+    "openradio": "./cli/index.js",
+    "openradio-tcp": "./cli/tcp.js"
   },
   "author": "Yonle",
   "license": "Apache-2.0",
