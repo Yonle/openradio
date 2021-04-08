@@ -64,7 +64,7 @@ var manager = {};
 
 function convert() {
 	return new ffmpeg({
-		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192", "-map", "0:a", "-map_metadata", "-1"],
+		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
 	});
 }
 
@@ -85,7 +85,9 @@ async function play(n) {
         console.log("There's no songs in this directory. Please put one and try again!");
         return process.stdout.write("Command > ");
     }
-
+    if (stream) {
+    	if (stream.playing) return;
+    }
     var filename = song[new Number(n) - 1] || song[songnum++];
     if (n) songnum = n;
     if (!filename) {
@@ -111,11 +113,18 @@ async function play(n) {
                 s.write(chunk);
             });
         });
-
+		stream.playing = true;
         stream.on("end", () => {
             if (!stream) return;
             if (!stream.stopped) return play();
         });
+
+	stream.on('error', err => {
+	    console.error(`An error occured when playing ${filename}:`, err);
+	    console.log("Skipping....");
+	    play();
+	});
+
         console.log("\n--> Now Playing:", `[${songnum}] ${filename}`);
         np = filename;
         process.stdout.write("Command > ");
@@ -142,6 +151,7 @@ process.stdin.on("data", (data) => {
             console.log(".random -", "Enable Random song fetching");
         } else if (command === "skip") {
             if (!stream) return console.log("Nothing Playing.");
+            stream.playing = false;
             stream.end();
             return console.log("->> Skipping " + "[" + songnum + "] " + np + "....");
         } else if (command === "np") {
@@ -174,10 +184,13 @@ process.stdin.on("data", (data) => {
             }
             if (!stream) return play(songnumber);
             stream.stopped = true;
+            stream.playing = false;
             stream.end(() => play(songnumber));
+			stream = null;
             return;
         } else if (command === "stop") {
             stream.stopped = true;
+            stream.playing = false;
             np = null;
             stream.end();
         } else if (command === "logs") {
