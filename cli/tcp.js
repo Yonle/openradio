@@ -28,6 +28,11 @@ const server = new net.Server((res) => {
             logs.push(`[${Date()}] Sink (${id}) Disconnected.`);
             sink.delete(id);
         });
+        res.on("error", err => {
+        	logs.push(`[${Date()}] ${err}`);
+        	logs.push(`[${Date()}] Sink (${id}) Disconnected.`);
+        	sink.delete(id);
+        });
     })
     .listen(port, () => {
         console.log("---> Radio started at port:", port);
