@@ -21,7 +21,7 @@ player.play(fs.createReadStream("audio.mp3"));
 
 #### For OpenRadio CLI
 ```bash
-# Go to some directory that contain mp3 files....
+# Go to some directory that contains any audio files....
 cd /home/Yonle/Music
 # Start the radio
 openradio
