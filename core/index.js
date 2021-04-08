@@ -5,14 +5,14 @@ const events = require("events");
 
 function convert() {
     return new ffmpeg({
-        args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
+		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
     });
 }
 
 function OpenRadio_Core() {
     var Core = new events();
     var sink = new Map();
-
+    
     sink.deleteAll = function deleteAll() {
         sink.forEach((s, id) => {
             sink.delete(id);
@@ -22,7 +22,8 @@ function OpenRadio_Core() {
     Core.playing = false;
     Core.ended = false;
     Core.end = null;
-
+	Core.destroy = null;
+	
     // Player
     Core.play = async function ReadStream(readable, BytePerSecond) {
         if (BytePerSecond) {
@@ -54,6 +55,7 @@ function OpenRadio_Core() {
         stream.on("error", (err) => Core.emit("error", err));
         Core.playing = true;
         Core.ended = false;
+        Core.destroy = stream.destroy;
         Core.end = stream.end;
 
         return stream;
