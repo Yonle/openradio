@@ -187,9 +187,8 @@ process.stdin.on("data", (data) => {
             if (!stream) return play(songnumber);
             stream.playing = false;
             stream.stopped = true;
-            stream.end();
+            stream.destroy();
             play(songnumber);
-            stream = null;
             return;
         } else if (command === "stop") {
             stream.stopped = true;
