@@ -21,6 +21,11 @@ openradio [Port] [Directory Path]
 # OpenRadio Core
 ## `core`
 Main Function of OpenRadio Core for creating new player __(Loaded from `require("openradio")`)__
+#### Parameters (Optional)
+ - `format` Radio audio format (Default: mp3)
+ - `rate` Radio Audio rate (hz) (Default: 48000)
+ - `channels` Radio Audio channels (Default: 2)
+ - `bitrate` Radio Audio bitrate (Default: 96)
 ### `player.play`
 A function for playing a song from provided readstream. Some of their parameter is required. They are:
   - `ReadStream` (Required) for reading stream.
