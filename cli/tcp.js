@@ -58,7 +58,8 @@ const _isAudio = function (item) {
 			extname(item.name) === ".wav" ||
 			extname(item.name) === ".flac" ||
 			extname(item.name) === ".ape" ||
-			extname(item.name) === ".wv"
+			extname(item.name) === ".wv" ||
+			extname(item.name) === ".oga"
 		)
 	); 
 }
