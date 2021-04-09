@@ -1,17 +1,22 @@
-// Openradio Core
+//Openradio Core
 const ffmpeg = require("prism-media").FFmpeg;
 const Throttle = require("throttle");
 const events = require("events");
 
-function convert() {
+function convert(opt) {
+    if (!opt) {
+		opt = {};
+    }
     return new ffmpeg({
-		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
+		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", opt.format || "mp3", "-ar", opt.rate || "48000", "-ac", opt.channels || "2", "-ab", `${opt.bitrate || "96"}k`, "-map", "0:a", "-map_metadata", "-1"]
     });
 }
 
-function OpenRadio_Core() {
+function OpenRadio_Core(opt) {
     var Core = new events();
     var sink = new Map();
+    var stream = null;
+    var converted = null;
     
     sink.deleteAll = function deleteAll() {
         sink.forEach((s, id) => {
@@ -22,7 +27,7 @@ function OpenRadio_Core() {
     Core.playing = false;
     Core.ended = false;
     Core.end = null;
-	Core.destroy = null;
+    Core.destroy = null;
 	
     // Player
     Core.play = async function ReadStream(readable, BytePerSecond) {
@@ -30,7 +35,8 @@ function OpenRadio_Core() {
             return new Error("BytePerSecond is Deprecated.");
         }
 
-        stream = readable.pipe(convert()).pipe(new Throttle(24000));
+        stream = readable.pipe(convert(opt)).pipe(Throttle((opt.bitrate * 1000 || 96000) / 8));
+        
         stream.on("data", (chunk) => {
             Core.emit("data", chunk);
             sink.forEach((dest, id) => {
