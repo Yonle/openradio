@@ -27,7 +27,6 @@ function OpenRadio_Core(opt) {
     Core.playing = false;
     Core.ended = false;
     Core.end = null;
-    Core.destroy = null;
 	Core.stream = null;
 	
     // Player
@@ -64,7 +63,6 @@ function OpenRadio_Core(opt) {
         readable.on("error", (err) => Core.emit("error", err));
         Core.playing = true;
         Core.ended = false;
-        Core.destroy = stream.destroy;
         Core.stream = stream;
 		
         return stream;
