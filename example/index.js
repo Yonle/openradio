@@ -34,3 +34,5 @@ var list = fs
 // Fetch & Play song randomly fron Music Directory!
 radio.play(fs.createReadStream(`./Music/${list[Math.floor(Math.random() * list.length)]}`));
 radio.on("end", () => {
+  radio.play(fs.createReadStream(`./Music/${list[Math.floor(Math.random() * list.length)]}`));
+});
