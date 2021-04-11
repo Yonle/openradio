@@ -28,6 +28,7 @@ function OpenRadio_Core(opt) {
     Core.ended = false;
     Core.end = null;
     Core.destroy = null;
+	Core.stream = null;
 	
     // Player
     Core.play = async function ReadStream(readable, BytePerSecond) {
