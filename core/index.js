@@ -35,7 +35,7 @@ function OpenRadio_Core(opt) {
             return new Error("BytePerSecond is Deprecated.");
         }
 
-        stream = readable.pipe(convert(opt)).pipe(Throttle((opt.bitrate * 1000 || 96000) / 8));
+        stream = readable.pipe(convert(opt)).on('error', e => Core.emit('error', e)).pipe(Throttle((opt.bitrate * 1000 || 96000) / 8));
         
         stream.on("data", (chunk) => {
             Core.emit("data", chunk);
