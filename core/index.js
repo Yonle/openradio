@@ -60,6 +60,7 @@ function OpenRadio_Core(opt) {
             Core.end = null;
         });
         stream.on("error", (err) => Core.emit("error", err));
+        readable.on("error", (err) => Core.emit("error", err));
         Core.playing = true;
         Core.ended = false;
         Core.destroy = stream.destroy;
