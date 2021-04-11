@@ -39,6 +39,7 @@ A function for Ending radio player (It won't end all writable Sink). Returns `nu
 Some event listener for player. 
   - `data` event returns buffer.
   - `end` event returns nothing when radio player is ended.
+  - `error` event returns error if there's a error.
 
 ### `player.ended`
 Some player object statement for knows that the radio player is ended.
