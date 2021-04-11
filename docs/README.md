@@ -34,7 +34,7 @@ A function for playing a song from provided readstream. Some of their parameter 
 Some object variable that returns `Map()` for managing sink/WriteStream. `player.sink.deleteAll` function is for deleteing all WriteStream inside sink Map.
 
 ### `player.stream`
-A object that returns throttled stream that created by openradio (Notice: You can't use `pipe` function). Returns `undefined` if there's nothing playing.
+A object that returns throttled stream that created by openradio (Notice: You can't use `pipe` function). Returns `null` if there's nothing playing.
 ### `player.on` 
 Some event listener for player. 
   - `data` event returns buffer.
