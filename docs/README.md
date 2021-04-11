@@ -3,7 +3,7 @@
   - [Usage](#usage)
 - [`core`](#core)
   - [`player.play`](#playerplay)
-  - [`player.end`](#playerend)
+  - [`player.stream`](#playerstream)
   - [`player.on`](#playeron)
   - [`player.ended`](#playerended)
   - [`player.playing`](#playerplaying)
@@ -33,8 +33,8 @@ A function for playing a song from provided readstream. Some of their parameter 
 ### `player.sink`
 Some object variable that returns `Map()` for managing sink/WriteStream. `player.sink.deleteAll` function is for deleteing all WriteStream inside sink Map.
 
-### `player.end`
-A function for Ending radio player (It won't end all writable Sink). Returns `null` instead of `function` if The radio is ended/not playing.
+### `player.stream`
+A object that returns throttled stream that created by openradio (Notice: You can't use `pipe` function.
 ### `player.on` 
 Some event listener for player. 
   - `data` event returns buffer.
@@ -71,7 +71,7 @@ Do this:
 player.play(....);
 
 // Skipping? End the player first!!
-player.end(() => {
+player.stream.end(() => {
    player.play(....)
 });
 ```
