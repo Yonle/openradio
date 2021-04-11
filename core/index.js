@@ -64,8 +64,8 @@ function OpenRadio_Core(opt) {
         Core.playing = true;
         Core.ended = false;
         Core.destroy = stream.destroy;
-        Core.end = stream.end;
-
+        Core.stream = stream;
+		
         return stream;
     };
 
