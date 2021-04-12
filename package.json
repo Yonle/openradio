@@ -8,7 +8,8 @@
   },
   "bin": {
     "openradio": "./cli/index.js",
-    "openradio-tcp": "./cli/tcp.js"
+    "openradio-tcp": "./cli/tcp.js",
+    "openradio-udp": "./cli/udp.js"
   },
   "author": "Yonle",
   "license": "Apache-2.0",
