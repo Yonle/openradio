@@ -27,9 +27,9 @@ Main Function of OpenRadio Core for creating new player __(Loaded from `require(
  - `channels` Radio Audio channels (Default: 2)
  - `bitrate` Radio Audio bitrate (Default: 96)
 ### `player.play`
-A function for playing a song from provided readstream. Some of their parameter is required. They are:
+A function for playing a song from provided readstream.
+#### Parameters **(Required)**
   - `ReadStream` (Required) for reading stream.
-  - ~~`BPS` Abbreviation of `byte-per-second`, This parameter is used to transfer buffers per second to the client.~~ **Deprecated**.
 ### `player.sink`
 Some object variable that returns `Map()` for managing sink/WriteStream. `player.sink.deleteAll` function is for deleteing all WriteStream inside sink Map.
 
