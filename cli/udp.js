@@ -32,7 +32,7 @@ server.bind(port, () => {
 		console.log("[WARNING] THIS IS EXPERIMENTAL FEATURE");
 		console.log("In openradio-udp, Sink management seems like unfunctionable, Like it didn't removed by itself. And please note that some packets may missing. Use it with Caution!!\n");
         console.log("---> Radio started at port:", port);
-        console.log("---> Send request to http://127.0.0.1:" + port + " to Start radio");
+        console.log("---> Send request to udp://127.0.0.1:" + port + " to Start radio");
         console.log("---> Or type command to manage audio");
         console.log("---> Or Press Enter to Play the radio stadion in Background.");
         console.log("\nFor command list, Type `.help`");

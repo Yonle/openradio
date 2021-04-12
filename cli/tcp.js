@@ -36,7 +36,7 @@ const server = new net.Server((res) => {
     })
     .listen(port, () => {
         console.log("---> Radio started at port:", port);
-        console.log("---> Send request to http://127.0.0.1:" + port + " to Start radio");
+        console.log("---> Send request to tcp://127.0.0.1:" + port + " to Start radio");
         console.log("---> Or type command to manage audio");
         console.log("---> Or Press Enter to Play the radio stadion in Background.");
         console.log("\nFor command list, Type `.help`");
