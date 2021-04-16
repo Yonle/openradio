@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const Throttle = require("throttle");
-const ffmpeg = require('prism-media').FFmpeg
+const ffmpeg = require('prism-media').FFmpeg;
+const compatibleFormat = require("./compatibleFormat.json");
 const dgram = require("dgram");
 const fs = require("fs");
 var sink = new Map();
@@ -44,21 +45,7 @@ const { extname } = require("path");
 
 const _readDir = () => Fs.readdirSync(dirname, { withFileTypes: true });
 
-const _isAudio = function (item) { 
-	return (item.isFile && (
-			extname(item.name) === ".mp3" ||
-			extname(item.name) === ".ogg" ||
-			extname(item.name) === ".opus" ||
-			extname(item.name) === ".aac" ||
-			extname(item.name) === ".m4a" ||
-			extname(item.name) === ".wav" ||
-			extname(item.name) === ".flac" ||
-			extname(item.name) === ".ape" ||
-			extname(item.name) === ".wv" ||
-			extname(item.name) === ".oga"
-		)
-	); 
-}
+const _isAudio = item => (item.isFile && compatibleFormat.includes(extname(item.name)));
 
 var manager = {};
 
