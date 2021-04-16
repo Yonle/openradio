@@ -1,7 +1,7 @@
 {
   "name": "openradio",
   "version": "latest",
-  "description": "A package that can be used to create your own livestream radio.",
+  "description": "Let you create your own livestream radio.",
   "main": "./core",
   "scripts": {
     "test": "node ./core"
