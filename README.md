@@ -1,5 +1,5 @@
 # openradio
-A package that can be used to create your own livestream radio.
+Let you create your own livestream radio.
 
 ## Installation
 Before installing OpenRadio, You must have **ffmpeg** installed at your system.
@@ -15,7 +15,7 @@ const openradio = require("openradio");
 const player = openradio();
 
 player.play(fs.createReadStream("audio.mp3"));
-// After this function, Do player.pipe(writestream)
+// After this function, Do player.pipe(dest)
 // Please notice that this is not regular readstream.
 ```
 
