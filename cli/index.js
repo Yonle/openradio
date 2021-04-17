@@ -35,9 +35,9 @@ const server = http
     .listen(port, () => {
         console.log("---> Radio started at port:", port);
         console.log("---> Send request to http://127.0.0.1:" + port + " to Start radio");
-        console.log("---> Or type command to manage audio");
+        console.log("---> Or type command to manage radio");
         console.log("---> Or Press Enter to Play the radio stadion in Background.");
-        console.log("\nFor command list, Type `.help`");
+        console.log("\nFor command list, Type `help`");
         process.stdout.write("Command > ");
     });
 
@@ -95,7 +95,7 @@ async function play(n) {
             filename = song[songnum - 1];
         }
     }
-        stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(new Throttle(24000));
+        stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(Throttle(24000));
         stream.on("data", (chunk) => {
             sink.forEach((s) => {
                 s.write(chunk);
@@ -123,22 +123,24 @@ async function play(n) {
 process.stdin.on("data", (data) => {
     var str = data.toString().trim();
     if (!stream) {
-        if (!str.startsWith(".")) play();
+        play();
     }
     console.log("");
-    if (str.startsWith(".")) {
-        var command = str.slice(1).split(" ")[0];
+    if (str) {
+        var command = (str.split(" ")[0] || "").toLowerCase();
         if (command === "help") {
-            console.log(".skip -", "Skip & Play other song");
-            console.log(".np -", "Showing Current playing song name");
-            console.log(".q / .ls -", "Showing song name in current folder");
-            console.log(".p -", "Skip & play provided song number");
-            console.log(".stop -", "Stop the player");
-            console.log(".logs -", "Show HTTP Traffic Logs");
-            console.log(".clearlogs -", "Clear logs");
-            console.log(".sink -", "Show all Sink name");
-            console.log(".loop -", "Loop the current song");
-            console.log(".random -", "Enable Random song fetching");
+            console.log("skip -", "Skip & Play other song");
+            console.log("np -", "Showing Current playing song name");
+            console.log("q / ls -", "Showing song name in current folder");
+            console.log("p -", "Skip & play provided song number");
+            console.log("stop -", "Stop the player");
+            console.log("logs -", "Show HTTP Traffic Logs");
+            console.log("clearlogs -", "Clear logs");
+            console.log("sink -", "Show all Sink name");
+            console.log("loop -", "Loop the current song");
+            console.log("random -", "Enable Random song fetching");
+            console.log("pause -", "Pause the radio");
+            console.log("resume -", "Resume the radio");
         } else if (command === "skip") {
             if (!stream) return console.log("Nothing Playing.");
             stream.playing = false;
@@ -180,6 +182,7 @@ process.stdin.on("data", (data) => {
             play(songnumber);
             return;
         } else if (command === "stop") {
+        	if (!stream) return console.log('Nothing playing.');
             stream.stopped = true;
             stream.playing = false;
             np = null;
@@ -236,6 +239,12 @@ process.stdin.on("data", (data) => {
                 random = false;
                 console.log("Random mode is now Disabled");
             }
+        } else if (command === "pause") {
+        	if (!stream) return console.log('Nothing Playing.');
+        	stream.pause();
+        } else if (command === "resume") {
+        	if (!stream) return console.log('Nothing Playing.');
+        	stream.resume();
         }
     }
     console.log("");
