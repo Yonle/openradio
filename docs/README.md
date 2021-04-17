@@ -25,7 +25,7 @@ np - Showing Current playing song name
 q / ls - Showing song name in current folder
 p - Skip & play provided song number
 stop - Stop the player
-logs - Show TCP Traffic Logs
+logs - Show <HTTP/UDP/TCP> Traffic Logs
 clearlogs - Clear logs
 sink - Show all Sink name
 loop - Loop the current song
