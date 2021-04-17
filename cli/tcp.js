@@ -98,7 +98,7 @@ async function play(n) {
             filename = song[songnum - 1];
         }
     }
-        stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(new Throttle(24000));
+        stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(Throttle(24000));
         stream.on("data", (chunk) => {
             sink.forEach((s) => {
                 s.write(chunk);
