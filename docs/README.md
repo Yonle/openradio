@@ -1,6 +1,7 @@
 # Table of Content
 - [OpenRadio CLI](#cli)
   - [Usage](#usage)
+  - [Commands](#commands)
 - [`core`](#core)
   - [`player.play`](#playerplay)
   - [`player.stream`](#playerstream)
@@ -17,7 +18,21 @@ Some openradio CLI that installed with `npm install -g openradio`
 ```bash
 openradio [Port] [Directory Path]
 ```
-
+### Commands
+```
+skip - Skip & Play other song
+np - Showing Current playing song name
+q / ls - Showing song name in current folder
+p - Skip & play provided song number
+stop - Stop the player
+logs - Show TCP Traffic Logs
+clearlogs - Clear logs
+sink - Show all Sink name
+loop - Loop the current song
+random - Enable Random song fetching
+pause - Pause the radio
+resume - Resume the radio
+```
 # OpenRadio Core
 ## `core`
 Main Function of OpenRadio Core for creating new player __(Loaded from `require("openradio")`)__
