@@ -14,13 +14,13 @@ function convert(opt) {
 
 function OpenRadio_Core(opt) {
     var Core = new events();
-    var sink = new Map();
     var stream = null;
     var converted = null;
-    
-    sink.deleteAll = function deleteAll() {
-        sink.forEach((s, id) => {
-            sink.delete(id);
+
+    Core.sink = new Map();
+    Core.sink.deleteAll = function deleteAll() {
+        Core.sink.forEach((s, id) => {
+            Core.sink.delete(id);
         });
     };
 
@@ -40,15 +40,15 @@ function OpenRadio_Core(opt) {
         
         stream.on("data", (chunk) => {
             Core.emit("data", chunk);
-            sink.forEach((dest, id) => {
+            Core.sink.forEach((dest, id) => {
                 try {
                     dest.write(chunk, (error) => {
                         if (error) {
-                            return sink.delete(id);
+                            return Core.sink.delete(id);
                         }
                     });
                 } catch (error) {
-                    sink.delete(id);
+                    Core.sink.delete(id);
                 }
             });
         });
@@ -70,11 +70,20 @@ function OpenRadio_Core(opt) {
 
     Core.pipe = function (dest) {
         var id = Math.random().toString(36).slice(2);
-        sink.set(id, dest);
+        Core.sink.set(id, dest);
+        dest.on('unpipe', () => {
+        	Core.sink.delete(id);
+        });
+        dest.on('error', (e) => {
+        	Core.sink.delete(id);
+        	Core.emit('error', e);
+        });
+        dest.on('close', () => Core.sink.delete(id));
+        dest.on('end', () => Core.sink.delete(id));
+        dest.on('finish', () => Core.sink.delete(id));
         return id;
     };
 
-    Core.sink = sink;
     return Core;
 }
 
