@@ -30,15 +30,9 @@ function OpenRadio_Core(opt) {
 	Core.stream = null;
 	
     // Player
-    Core.play = async function ReadStream(readable, BytePerSecond) {
-        if (BytePerSecond) {
-            return new Error("BytePerSecond is Deprecated.");
-        }
-
-        stream = readable.pipe(convert(opt)).on('error', e => Core.emit('error', e)).pipe(Throttle(((() => { if (opt && opt.bitrate) return opt.bitrate * 1000 })() || 96000
-        ) / 8));
-        
-        stream.on("data", (chunk) => {
+    Core.play = async function ReadStream(readable) {
+		if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed) Core.stream.destroy();
+        Core.stream = readable.pipe(convert(opt)).on('error', e => Core.emit('error', e)).pipe(Throttle(((() => { if (opt && opt.bitrate) return opt.bitrate * 1000 })() || 96000) / 8)).on("data", (chunk) => {
             Core.emit("data", chunk);
             Core.sink.forEach((dest, id) => {
                 try {
@@ -51,21 +45,17 @@ function OpenRadio_Core(opt) {
                     Core.sink.delete(id);
                 }
             });
-        });
-
-        stream.on("end", () => {
+        }).on("end", () => {
             Core.emit("end", null);
             Core.ended = true;
             Core.playing = false;
             Core.end = null;
-        });
-        stream.on("error", (err) => Core.emit("error", err));
+        }).on("error", (err) => Core.emit("error", err));
         readable.on("error", (err) => Core.emit("error", err));
         Core.playing = true;
         Core.ended = false;
-        Core.stream = stream;
 		
-        return stream;
+        return Core.stream;
     };
 
     Core.pipe = function (dest) {
