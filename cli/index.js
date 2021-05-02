@@ -122,9 +122,6 @@ async function play(n) {
 
 process.stdin.on("data", (data) => {
     let str = data.toString().trim();
-    if (!stream) {
-        play();
-    }
     console.log("");
     if (str) {
         let command = (str.split(" ")[0] || "").toLowerCase();
@@ -141,6 +138,7 @@ process.stdin.on("data", (data) => {
             console.log("random -", "Enable Random song fetching");
             console.log("pause -", "Pause the radio");
             console.log("resume -", "Resume the radio");
+    	    console.log("cd -", "Change directory");
         } else if (command === "skip") {
             if (!stream) return console.log("Nothing Playing.");
             stream.playing = false;
@@ -245,10 +243,18 @@ process.stdin.on("data", (data) => {
         } else if (command === "resume") {
         	if (!stream) return console.log('Nothing Playing.');
         	stream.resume();
-        }
+        } else if (command === "cd") {
+                        let args = str.split(" ").slice(1).join(" ");
+            try {
+            process.chdir(args || process.env.HOME);
+            dirname = process.cwd() + "/";
+            } catch (error) {
+            	console.error(error);
+            }
+                }
+    } else {
+    	if (!stream) play();
     }
     console.log("");
     process.stdout.write("Command > ");
 });
-
-module.exports = "We are not ready for used as Module. Please use the CLI version or use openradio with exec.";
