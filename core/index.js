@@ -13,9 +13,9 @@ function convert(opt) {
 }
 
 function OpenRadio_Core(opt) {
-    var Core = new events();
-    var stream = null;
-    var converted = null;
+    let Core = new events();
+    let stream = null;
+    let converted = null;
 
     Core.sink = new Map();
     Core.sink.deleteAll = function deleteAll() {
@@ -61,7 +61,7 @@ function OpenRadio_Core(opt) {
     };
 
     Core.pipe = function (dest) {
-        var id = Math.random().toString(36).slice(2);
+        let id = Math.random().toString(36).slice(2);
         Core.sink.set(id, dest);
         dest.on('unpipe', () => {
         	Core.sink.delete(id);
