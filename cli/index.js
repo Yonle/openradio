@@ -5,16 +5,16 @@ const ffmpeg = require('prism-media').FFmpeg;
 const compatibleFormat = require("./compatibleFormat.json");
 const http = require("http");
 const fs = require("fs");
-var sink = new Map();
-var port = process.argv.slice(2)[0] || 4600;
-var dirname = process.argv.slice(3)[0] || process.cwd();
-var stream;
-var np;
-var readable;
-var logs = [];
-var songnum = 0;
-var loop = false;
-var random = false;
+let sink = new Map();
+let port = process.argv.slice(2)[0] || 4600;
+let dirname = process.argv.slice(3)[0] || process.cwd();
+let stream;
+let np;
+let readable;
+let logs = [];
+let songnum = 0;
+let loop = false;
+let random = false;
 
 process.title = "OpenRadio";
 if (!dirname.endsWith("/")) dirname = dirname + "/";
@@ -22,8 +22,8 @@ const server = http
     .createServer((req, res) => {
         // if There's no stream, Do nothing and act nothing.
         if (!stream) play();
-        var generateId = () => Math.random().toString(36).slice(2);
-        var id = generateId() + generateId() + generateId() + generateId() + generateId() + generateId();
+        let generateId = () => Math.random().toString(36).slice(2);
+        let id = generateId() + generateId() + generateId() + generateId() + generateId() + generateId();
         res.setHeader("Content-Type", "audio/mpeg");
         logs.push(`[${Date()}] New Sink Connected (${id})`);
         sink.set(id, res);
@@ -48,7 +48,7 @@ const _readDir = () => Fs.readdirSync(dirname, { withFileTypes: true });
 
 const _isAudio = item => (item.isFile && compatibleFormat.includes(extname(item.name))); 
 
-var manager = {};
+let manager = {};
 
 function convert() {
 	return new ffmpeg({
@@ -68,7 +68,7 @@ manager.getFirstWord = (str) => str.split(" ")[0];
 console.log("Total Songs in Directory:", manager.readSongs().length);
 
 async function play(n) {
-    var song = manager.readSongs();
+    let song = manager.readSongs();
     if (manager.readSongs().length === 0) {
         console.log("There's no songs in this directory. Please put one and try again!");
         return process.stdout.write("Command > ");
@@ -76,7 +76,7 @@ async function play(n) {
     if (stream) {
     	if (stream.playing) return;
     }
-    var filename = song[new Number(n) - 1] || song[songnum++];
+    let filename = song[new Number(n) - 1] || song[songnum++];
     if (n) songnum = n;
     if (!filename) {
         filename = song[0];
@@ -121,13 +121,13 @@ async function play(n) {
 }
 
 process.stdin.on("data", (data) => {
-    var str = data.toString().trim();
+    let str = data.toString().trim();
     if (!stream) {
         play();
     }
     console.log("");
     if (str) {
-        var command = (str.split(" ")[0] || "").toLowerCase();
+        let command = (str.split(" ")[0] || "").toLowerCase();
         if (command === "help") {
             console.log("skip -", "Skip & Play other song");
             console.log("np -", "Showing Current playing song name");
@@ -153,7 +153,7 @@ process.stdin.on("data", (data) => {
             console.log(`[${songnum}]`, np);
         } else if (command === "q" || command === "ls") {
             console.log("############### Song List ###############\n");
-            var cl = 1;
+            let cl = 1;
             manager.readSongs().forEach((e) => {
                 console.log(`[${cl}]`, e);
                 cl++;
@@ -164,13 +164,13 @@ process.stdin.on("data", (data) => {
                 console.log(`[${songnum}]`, np);
             }
         } else if (command === "p" || command === "play") {
-            let songnumber = new Number(str.split(" ")[1]);
+            let songnumber = Number(str.split(" ").slice(1)[0]);
             if (!songnumber) {
-                console.log("Usage: .p [Song number]");
-                console.log("To get song number, Do `.q`\n");
+                console.log("Usage: p [Song number]");
+                console.log("To get song number, Do `q`\n");
                 return process.stdout.write("Command > ");
             }
-            var sname = manager.readSongs()[songnumber - 1];
+            let sname = manager.readSongs()[songnumber - 1];
             if (!sname) {
                 console.log("Song not found\n");
                 return process.stdout.write("Command > ");
@@ -193,7 +193,7 @@ process.stdin.on("data", (data) => {
             logs = [];
         } else if (command === "sink") {
             a = 1;
-            var args = str.split(" ").slice(1).join(" ");
+            let args = str.split(" ").slice(1).join(" ");
             if (!args) {
                 console.log("--------------------- Sink Manager -");
                 console.log("--- ID -----------------------------");
@@ -205,11 +205,11 @@ process.stdin.on("data", (data) => {
                 console.log("To remove sink ID, Execute `.sink remove <sink id>`");
             } else {
                 if (args.startsWith("remove")) {
-                    var id = args.split(" ").slice(1).join(" ");
+                    let id = args.split(" ").slice(1).join(" ");
                     if (!id) {
                         console.log("Usage: .sink remove <sink id>");
                     } else {
-                        var res = sink.get(id);
+                        let res = sink.get(id);
                         if (!res) {
                             console.log("There's no Sink ID", res);
                         } else {
