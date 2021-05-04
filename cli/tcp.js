@@ -4,6 +4,8 @@ const Throttle = require("throttle");
 const ffmpeg = require('prism-media').FFmpeg;
 const compatibleFormat = require("./compatibleFormat.json");
 const net = require("net");
+const readline = require("readline");
+const rl = readline.createInterface(process.stdin, process.stdout);
 const fs = require("fs");
 let sink = new Map();
 let port = process.argv.slice(2)[0] || 5000;
@@ -41,7 +43,7 @@ const server = new net.Server((res) => {
         console.log("---> Or type command to manage radio");
         console.log("---> Or Press Enter to Play the radio stadion in Background.");
         console.log("\nFor command list, Type `help`");
-        process.stdout.write("Command > ");
+        rl.prompt()
     });
 
 const Fs = require("fs");
@@ -74,7 +76,7 @@ async function play(n) {
     let song = manager.readSongs();
     if (manager.readSongs().length === 0) {
         console.log("There's no songs in this directory. Please put one and try again!");
-        return process.stdout.write("Command > ");
+        return rl.prompt()
     }
     if (stream) {
     	if (stream.playing) return;
@@ -120,12 +122,10 @@ async function play(n) {
 
         console.log("\n--> Now Playing:", `[${songnum}] ${filename}`);
         np = filename;
-        process.stdout.write("Command > ");
+        rl.prompt()
 }
 
-process.stdin.on("data", (data) => {
-    let str = data.toString().trim();
-    console.log("");
+rl.on('line', str => {
     if (str) {
         let command = str.split(" ")[0];
         if (command === "help") {
@@ -169,12 +169,12 @@ process.stdin.on("data", (data) => {
             if (!songnumber) {
                 console.log("Usage: p [Song number]");
                 console.log("To get song number, Do `q`\n");
-                return process.stdout.write("Command > ");
+                return rl.prompt()
             }
             let sname = manager.readSongs()[songnumber - 1];
             if (!sname) {
                 console.log("Song not found\n");
-                return process.stdout.write("Command > ");
+                return rl.prompt()
             }
             if (!stream) return play(songnumber);
             stream.playing = false;
@@ -258,6 +258,7 @@ process.stdin.on("data", (data) => {
     } else {
     	if (!stream) play();
     }
-    console.log("");
-    process.stdout.write("Command > ");
+    rl.prompt();
 });
+
+rl.setPrompt("Command > ");
