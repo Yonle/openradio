@@ -11,6 +11,7 @@ let sink = new Map();
 let port = process.argv.slice(2)[0] || 5000;
 let dirname = process.argv.slice(3)[0] || process.cwd();
 let stream;
+let host;
 let np;
 let readable;
 let logs = [];
@@ -19,6 +20,11 @@ let loop = false;
 let random = false;
 
 process.title = "OpenRadio";
+process.argv.forEach((e, index) => {
+        if (e === "-a" || e === "--address" && index < process.argv.length - 1) {
+                host = process.argv[index + 1];
+        }
+});
 if (!dirname.endsWith("/")) dirname = dirname + "/";
 const server = new net.Server((res) => {
         // if There's no stream, Do nothing and act nothing.
@@ -37,9 +43,9 @@ const server = new net.Server((res) => {
         	sink.delete(id);
         });
     })
-    .listen(port, () => {
+    .listen(port, host||"0.0.0.0", () => {
         console.log("---> Radio started at port:", port);
-        console.log("---> Send request to tcp://127.0.0.1:" + port + " to Start radio");
+        console.log(`---> Send request to tcp://${host||"0.0.0.0"}:` + port + " to Start radio");
         console.log("---> Or type command to manage radio");
         console.log("---> Or Press Enter to Play the radio stadion in Background.");
         console.log("\nFor command list, Type `help`");
@@ -142,6 +148,7 @@ rl.on('line', str => {
             console.log("pause -", "Pause the radio");
             console.log("resume -", "Resume the radio");
             console.log("cd -", "Change directory");
+            console.log("\nTo listen to different Address, Do `openradio 3000 . -a 127.0.0.1`");
         } else if (command === "skip") {
             if (!stream) return console.log("Nothing Playing.");
             stream.playing = false;
