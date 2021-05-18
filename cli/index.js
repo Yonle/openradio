@@ -86,23 +86,31 @@ async function play(n) {
     }
     let filename = song[new Number(n) - 1] || song[songnum++];
     if (n) songnum = n;
-    if (!filename) {
-        filename = song[0];
-        songnum = 1;
-    }
 
     if (loop) {
         if (!n) {
-            songnum = songnum - 1;
-            filename = song[songnum - 1];
+			if (songnum != 1) {
+            	songnum = songnum - 1;
+            	filename = song[songnum - 1];
+            } else {
+            	songnum = manager.readSongs().length;
+            	filename = song[songnum - 1];
+            }
         }
     }
+    
     if (random) {
         if (!n) {
             songnum = Math.floor(Math.random() * song.length);
             filename = song[songnum - 1];
         }
     }
+    
+	if (!filename || !songnum) {
+		filename = song[0];
+		songnum = 1;
+	} 
+    
         stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(Throttle(24000));
         stream.on("data", (chunk) => {
             sink.forEach((s) => {
