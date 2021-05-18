@@ -55,9 +55,9 @@ const _isAudio = item => (item.isFile && compatibleFormat.includes(extname(item.
 
 let manager = {};
 
-function convert() {
+function convert(filename) {
 	return new ffmpeg({
-		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
+		args: ["-i", filename, "-analyzeduration", "0", "-loglevel", "0", "-f", "mp3", "-ar", "48000", "-ac", "2", "-ab", "192k", "-map", "0:a", "-map_metadata", "-1"],
 	});
 }
 
@@ -107,7 +107,7 @@ async function play(n) {
     	songnum = 1;
     }
     
-        stream = fs.createReadStream(`${dirname}/${filename}`).pipe(convert()).pipe(Throttle(24000));
+        stream = convert(`${dirname}/${filename}`).pipe(Throttle(24000));
         stream.on("data", (chunk) => {
             sink.forEach((s, id) => {
                 server.send(chunk, 0, chunk.length, s.port, s.address, (err) => {
