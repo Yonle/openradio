@@ -15,8 +15,8 @@ const openradio = require("openradio");
 const player = openradio();
 
 player.play(fs.createReadStream("audio.mp3"));
-// After this function, Do player.pipe(dest)
-// Please notice that this is not regular readstream.
+// After this function, A player is now broadcasting a song. 
+// Do player.pipe(writable) after this.
 ```
 
 #### For OpenRadio CLI
