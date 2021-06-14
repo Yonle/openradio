@@ -6,10 +6,9 @@
   - [`player.play`](#playerplay)
   - [`player.stream`](#playerstream)
   - [`player.on`](#playeron)
-  - [`player.ended`](#playerended)
+  - [`player.finished`](#playerfinished)
   - [`player.playing`](#playerplaying)
-  - [`player.pipe`](#playerpipe)
-- [Caution](#caution)
+- [Example](#example)
 
 # OpenRadio CLI
 ## CLI
@@ -35,7 +34,7 @@ resume - Resume the radio
 ```
 # OpenRadio Core
 ## `core`
-Main Function of OpenRadio Core to creating new player __(Loaded from `require("openradio")`)__
+Main Function of OpenRadio Core to creating new player __(Loaded from `require("openradio")`)__. Returns [`PassThrough`](https://nodejs.org/api/stream.html#stream_class_stream_passthrough)
 #### Parameters (Optional)
  - `format` Radio audio format (Default: mp3)
  - `rate` Radio Audio rate (hz) (Default: 48000)
@@ -61,15 +60,6 @@ const player = openradio();
 
 player.play(fs.createReadStream("song.mp3"));
 ```
-### `player.sink`
-Some object variable that returns `Map()` for managing sink/WriteStream. `player.sink.deleteAll` function is for deleteing all WriteStream inside sink Map.
-```js
-const openradio = require("openradio");
-const player = openradio();
-
-player.sink;
-// Map(0) { .... }
-```
 ### `player.stream`
 A object that returns [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) that created by openradio (Notice: You can't use `pipe` function). Returns `null` if there's nothing playing.
 ```js
@@ -81,9 +71,8 @@ player.play(fs.createReadStream("song.mp3"));
 player.stream.end();
 ```
 ### `player.on` 
-Some event listener for player. 
-  - `data` event returns buffer.
-  - `end` event returns nothing when radio player is ended.
+Some event listener for player. [`ReadableStream`](https://nodejs.org/api/stream.html#stream_class_stream_readable) event is also emitted here.
+  - `finish` event returns nothing when radio player finished playing a song.
   - `error` event returns error if there's a error. Very required in some cases.
 ```js
 const openradio = require("openradio");
@@ -91,14 +80,14 @@ const player = openradio();
 
 player.on('error', console.error);
 ```
-### `player.ended`
+### `player.finished`
 Some player object statement for knows that the radio player is ended.
 
 ```js
 const openradio = require("openradio");
 const player = openradio();
 
-player.ended;
+player.finished;
 // Returns false if it's playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
 ```
 ### `player.playing`
@@ -110,9 +99,7 @@ const player = openradio();
 player.playing;
 // Returns false if it's not playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
 ```
-### `player.pipe`
-A function for writting a incomming buffer from radio player. Returns Writable Stream ID for managing sink. 
-
+## Example
 ```js
 const openradio = require("openradio");
 const player = openradio();
@@ -124,3 +111,5 @@ http.createServer((req, res) => {
    player.pipe(res);
 }).listen(3000);
 ```
+Other example is available at [Example directory](https://github.com/Yonle/openradio/tree/radio/example)
+
