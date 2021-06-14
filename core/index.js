@@ -1,5 +1,6 @@
 //Openradio Core
 const ffmpeg = require("prism-media").FFmpeg;
+const { PassThrough } = require("stream");
 const Throttle = require("throttle");
 const events = require("events");
 
@@ -13,20 +14,11 @@ function convert(opt) {
 }
 
 function OpenRadio_Core(opt) {
-    let Core = new events();
-    let stream = null;
+    let Core = new PassThrough();
     let converted = null;
 
-    Core.sink = new Map();
-    Core.sink.deleteAll = function deleteAll() {
-        Core.sink.forEach((s, id) => {
-            Core.sink.delete(id);
-        });
-    };
-
     Core.playing = false;
-    Core.ended = false;
-    Core.end = null;
+    Core.finish = false;
 	Core.stream = null;
 	
     // Player
@@ -34,21 +26,10 @@ function OpenRadio_Core(opt) {
     	return new Promise((res, rej) => {
 			if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed) Core.stream.destroy();
         	Core.stream = readable.pipe(convert(opt)).on('error', e => Core.emit('error', e)).pipe(Throttle(((() => { if (opt && opt.bitrate) return opt.bitrate * 1000 })() || 96000) / 8)).on("data", (chunk) => {
-            	Core.emit("data", chunk);
-            	Core.sink.forEach((dest, id) => {
-                	try {
-                    	dest.write(chunk, (error) => {
-                        	if (error) {
-                            	return Core.sink.delete(id);
-                        	}
-                    	});
-                	} catch (error) {
-            	        Core.sink.delete(id);
-        	        }
-    	        });
+            	Core.write(chunk);
 	        }).on("end", (e) => {
-            	Core.emit("end", e);
-            	Core.ended = true;
+            	Core.emit("finish", e);
+            	Core.finish = true;
             	Core.playing = false;
             	return res(e);
         	}).on("error", (err) => {
@@ -56,24 +37,8 @@ function OpenRadio_Core(opt) {
         	});
         	readable.on("error", (err) => Core.emit("error", err));
     	    Core.playing = true;
-	        Core.ended = false;
+	        Core.finish = false;
         });
-    };
-
-    Core.pipe = function (dest) {
-        let id = Math.random().toString(36).slice(2);
-        Core.sink.set(id, dest);
-        dest.on('unpipe', () => {
-        	Core.sink.delete(id);
-        });
-        dest.on('error', (e) => {
-        	Core.sink.delete(id);
-        	Core.emit('error', e);
-        });
-        dest.on('close', () => Core.sink.delete(id));
-        dest.on('end', () => Core.sink.delete(id));
-        dest.on('finish', () => Core.sink.delete(id));
-        return id;
     };
 
     return Core;
