@@ -103,8 +103,9 @@ player.playing;
 ```js
 const openradio = require("openradio");
 const player = openradio();
+const fs = require("fs");
 
-player.play("song.mp3");
+player.play(fs.createReadStream("song.mp3"));
 
 const http = require("http");
 http.createServer((req, res) => {
