@@ -2,7 +2,7 @@
 Let you create your own livestream radio.
 
 ## Installation
-Before installing OpenRadio, You must have **ffmpeg** installed at your system.
+Before installing OpenRadio, You must have [ffmpeg](https://ffmpeg.org) installed on your system.
 ```bash
 # OpenRadio CLI Installation
 npm install -g openradio
@@ -34,4 +34,4 @@ openradio 8080
 - [Example](https://github.com/Yonle/openradio/tree/radio/example)
 
 ## Community
-[Discord](https://discord.gg/9S3ZCDR)
+- [Telegram](https://t.me/yonlecoder)

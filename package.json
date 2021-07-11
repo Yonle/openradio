@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "latest",
+  "version": "1.1.32",
   "description": "Let you create your own livestream radio.",
   "main": "./core",
   "scripts": {
@@ -14,7 +14,7 @@
   "author": "Yonle",
   "license": "Apache-2.0",
   "dependencies": {
-    "prism-media": "^1.2.9",
+    "prism-media": "^1.x",
     "throttle": "^1.0.3"
   },
   "repository": {
