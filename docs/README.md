@@ -37,7 +37,7 @@ resume - Resume the radio
 Main Function of OpenRadio Core to creating new player __(Loaded from `require("openradio")`)__. Returns [`PassThrough`](https://nodejs.org/api/stream.html#stream_class_stream_passthrough)
 #### Parameters (Optional)
  - `format` Radio audio format (Default: mp3)
- - `rate` Radio Audio rate (hz) (Default: 44100)
+ - `rate` Radio Audio rate (hz) (Default: 48000)
  - `channels` Radio Audio channels (Default: 2)
  - `bitrate` Radio Audio bitrate (Default: 96)
 ### `player.play`
