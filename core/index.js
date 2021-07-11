@@ -9,7 +9,7 @@ function convert(opt) {
 		opt = {};
     }
     return new ffmpeg({
-		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", opt.format || "mp3", "-ar", opt.rate || "44100", "-ac", opt.channels || "2", "-ab", `${opt.bitrate || "96"}k`, "-map", "0:a", "-map_metadata", "-1"]
+		args: ["-analyzeduration", "0", "-loglevel", "0", "-f", opt.format || "mp3", "-ar", opt.rate || "48000", "-ac", opt.channels || "2", "-ab", `${opt.bitrate || "96"}k`, "-map", "0:a", "-map_metadata", "-1"]
     });
 }
 
