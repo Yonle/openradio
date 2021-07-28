@@ -4,6 +4,7 @@
   - [Commands](#commands)
 - [`core`](#core)
   - [`player.play`](#playerplay)
+  - [`player.playPCM`](#playerplaypcm)
   - [`player.stream`](#playerstream)
   - [`player.on`](#playeron)
   - [`player.finished`](#playerfinished)
@@ -60,6 +61,17 @@ const player = openradio();
 
 player.play(fs.createReadStream("song.mp3"));
 ```
+### `player.playPCM`
+Same as [`player.play`](#playerplay). But for playing PCM audio.
+
+### Parameters
+  - `ReadStream` (Required) for reading Stream
+  - `PCM Info` PCM Information
+
+#### `PCM Info`
+  - `rate` Audio Samplerate (Default: 44100)
+  - `channels` Audio Channels (Default: 2)
+  
 ### `player.stream`
 A object that returns [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) that created by openradio (Notice: You can't use `pipe` function). Returns `null` if there's nothing playing.
 ```js

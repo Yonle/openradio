@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "1.1.33",
+  "version": "1.1.35",
   "description": "Let you create your own livestream radio.",
   "main": "./core",
   "scripts": {
@@ -9,7 +9,8 @@
   "bin": {
     "openradio": "./cli/index.js",
     "openradio-tcp": "./cli/tcp.js",
-    "openradio-udp": "./cli/udp.js"
+    "openradio-udp": "./cli/udp.js",
+    "openradio-pulse": "./cli/pulse.js"
   },
   "author": "Yonle",
   "license": "Apache-2.0",
