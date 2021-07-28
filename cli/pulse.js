@@ -107,6 +107,7 @@ server.on('error', err => console.error(`[${Date()}]`, err));
 server.on('request', (req, res) => {
 	let id = Math.random();
 	let address = req.socket.address();
+	res.writeHead(200, { "content-type": "audio/mp3" });
 	sink.set(id, res);
 	if (config.log) console.log(`[${Date()}]`, "New Client:", `${address.address}:${address.port}`);
 	req.on('close', () => {
