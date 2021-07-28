@@ -17,7 +17,7 @@ const config = {
     bitrate: 320,
     channels: 2,
     rate: 48000,
-    format: "adts",
+    format: "mp3",
   },
   server: {
     port: 8080,
@@ -93,7 +93,7 @@ argv.forEach(async (key, index) => {
       " --output-samplerate [num] - Audio output samplerate (Default: 48000)"
     );
     console.log(
-      " --output-format [format]  - Audio output formats (Default: adts)"
+      " --output-format [format]  - Audio output formats (Default: mp3)"
     );
     console.log(
       "                             Supported Formats:",
