@@ -93,7 +93,7 @@ argv.forEach(async (key, index) => {
       " --output-samplerate [num] - Audio output samplerate (Default: 48000)"
     );
     console.log(
-      " --output-format [format]  - Audio output formats (Default: aac)"
+      " --output-format [format]  - Audio output formats (Default: adts)"
     );
     console.log(
       "                             Supported Formats:",
