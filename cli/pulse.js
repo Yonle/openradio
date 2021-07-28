@@ -2,6 +2,8 @@
 const supportedPlatform = ["Linux"];
 const { spawn } = require("child_process");
 const openradio = require("../");
+const daemon = require("./daemon");
+const fs = require("fs");
 const http = require("http");
 const server = http.createServer();
 const argv = process.argv.slice(2);
@@ -21,7 +23,8 @@ const config = {
 	 	address: "0.0.0.0"
 	 },
 	 parec_path: process.env.PREFIX + "/bin/parec",
-	 log: 0
+	 log: 0,
+	 daemon: 1
 }
 
 if (!supportedPlatform.includes(require("os").type()) && !["--force", "-force", "-f"].includes(argv[0])) {
@@ -30,9 +33,9 @@ if (!supportedPlatform.includes(require("os").type()) && !["--force", "-force", 
 	process.exit(1);
 }
 
-console.log("\nOpenradio Pulseaudio - v1.0");
+console.log("\nOpenradio Pulseaudio - v1.1");
 
-argv.forEach((key, index) => {
+argv.forEach(async (key, index) => {
 	let value = argv[index+1];
 	if (["--port", "-port", "-p"].includes(key)) {
 		if (isNaN(value)) return console.error("Usage: openradio-pulse --port [Port Number]");
@@ -45,6 +48,9 @@ argv.forEach((key, index) => {
 		console.log(" --parec-path [Path]       - Path to parec binary (Default: $PREFIX/bin/parec)");
 		console.log(" --help                    - Show this");
 		console.log(" --log                     - Log every HTTP Traffic");
+		console.log("\nDaemonize Service:\n");
+		console.log(" --daemon                  - Do not run as Daemonize Service");
+		console.log(" --kill                    - Kill Daemonize service");
 		console.log("\nAudio Input Options:\n");
 		console.log(" --input-samplerate [num]  - Input Samplerate (Default: 44100)");
 		console.log(" --input-channels [num]    - Input Channels (Default: 2)");
@@ -77,10 +83,27 @@ argv.forEach((key, index) => {
 		config.server.address = value;
 	} else if (["--log", "-log", "-l", "-verbose", "--verbose", "-v"].includes(key)) {
 		config.log = 1;
+	} else if (["--daemon", "-daemon", "-d"].includes(key)) {
+		config.daemon = 0;
+	} else if (["--kill", "-kill", "-k"].includes(key)) {
+		try {
+			let daemons = JSON.parse(fs.readFileSync(process.env.TMPDIR + "/openradio-pulse-daemon.json"));
+			console.log("Killing process " + daemons.pid + "....");
+			process.kill(daemons.pid, 'SIGINT');
+			fs.rmSync(process.env.TMPDIR + "/openradio-pulse-daemon.json");
+		} catch (error) {
+			if (error.code === "ENOENT") {
+				console.error("No daemon was running or already killed.\nYou may should kill it manually by ran \"pkill -9 node\" if it's still running.");
+				return process.exit(1);
+			}
+			console.error(error);
+			return process.exit(1);
+		}
+		process.exit();
 	}
 });
 
-server.on('error', console.error);
+server.on('error', err => console.error(`[${Date()}]`, err));
 server.on('request', (req, res) => {
 	let id = Math.random();
 	let address = req.socket.address();
@@ -105,8 +128,8 @@ console.log("\n- HTTP Server");
 console.log("  Address   :", config.server.address);
 console.log("  Port      :", config.server.port);
 console.log("\nparec Binary path:", config.parec_path);
+if (config.daemon) daemon();
 console.log("Log Incomming Traffic:", config.log ? "Yes" : "No");
-
 process.stdout.write(`\n[${Date()}] Launching Server.... `);
 
 let listener = server.listen(config.server.port, config.server.address, () => {
@@ -114,7 +137,14 @@ let listener = server.listen(config.server.port, config.server.address, () => {
 	console.log(`\n[${Date()}]`, "Now listening on port", listener.address().port);
 
 	let radio = openradio(config.output);
-	radio.playPCM(spawn(config.parec_path, config.input).stdout);
+	function play() {
+		let parec = spawn(config.parec_path, config.input);
+		parec.on('close', play);
+		parec.on('error', err => console.error(`[${Date()}]`, err));
+		parec.stderr.pipe(process.stderr);
+		radio.playPCM(parec.stdout, config.input);
+	}
+	
 	radio.on('data', chunk => {
 		sink.forEach((res, id) => {
 			res.write(chunk, err => {
@@ -122,5 +152,7 @@ let listener = server.listen(config.server.port, config.server.address, () => {
 			});
 		});
 	});
+
+	play();
 });
 
