@@ -14,7 +14,7 @@ const config = {
     channels: 2,
   },
   output: {
-    bitrate: 705,
+    bitrate: 320,
     channels: 2,
     rate: 48000,
     format: "adts",
@@ -93,7 +93,7 @@ argv.forEach(async (key, index) => {
       " --output-samplerate [num] - Audio output samplerate (Default: 48000)"
     );
     console.log(
-      " --output-format [format]  - Audio output formats (Default: mp3)"
+      " --output-format [format]  - Audio output formats (Default: aac)"
     );
     console.log(
       "                             Supported Formats:",
