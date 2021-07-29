@@ -173,7 +173,7 @@ server.on("request", (req, res) => {
   let id = Math.random();
   let address = req.socket.address();
   res.writeHead(200, { "content-type": "audio/" + config.output.format });
-  res.write(header);
+  if (header) res.write(header);
   sink.set(id, res);
   if (config.log)
     console.log(
