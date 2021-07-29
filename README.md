@@ -9,7 +9,7 @@
   - [`player.on`](#playeron)
   - [`player.finished`](#playerfinished)
   - [`player.playing`](#playerplaying)
-- [Other format support](#otherformatsupport)
+- [Other format support](#other-format-support)
 - [Example](#example)
 
 # OpenRadio CLI
