@@ -56,6 +56,7 @@ async function intro () {
 #### Parameters **(Required)**
   - `ReadStream` (Required) for reading stream.
 
+Example:
 ```js
 const openradio = require("openradio");
 const player = openradio();
