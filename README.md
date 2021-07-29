@@ -9,6 +9,7 @@
   - [`player.on`](#playeron)
   - [`player.finished`](#playerfinished)
   - [`player.playing`](#playerplaying)
+- [Other format support](#otherformatsupport)
 - [Example](#example)
 
 # OpenRadio CLI
@@ -113,7 +114,37 @@ const player = openradio();
 player.playing;
 // Returns false if it's not playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
 ```
+
+## Other format support
+Some format may supported normally such as `adts` and `mp3`. But some format like `opus`, `wav`, and more requires header so audio player can read the audio metadata as well. To fix this issue, We're gonna cache Header datas at first play.
+
+By example, We're gonna use `oga` format for our broadcast.
+
+```js
+const openradio = require("openradio");
+const { createServer } = require("http");
+const radio = openradio({ format: "oga" });
+// Audio Cache headers
+let header = null;
+
+createServer((req, res) => {
+	res.setHeader("content-type", "audio/oga");
+	// First, Make sure there's a header. if there is, Send.
+	if (header) res.write(header);
+	radio.pipe(res);
+	// ...
+});
+
+// Listen to data event and get it's header
+radio.on('data', data => {
+	if (!header) header = data;
+});
+
+// Do something like playing audio....
+```
+
 ## Example
+
 ```js
 const openradio = require("openradio");
 const player = openradio();
