@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const supportedPlatform = ["Linux"];
 const { spawn } = require("child_process");
-const openradio = require("../");
+const { FFmpeg } = require("prism-media");
 const fs = require("fs");
 const http = require("http");
 const server = http.createServer();
@@ -39,6 +39,37 @@ let error = (text) => {
   console.error(text);
   process.exit(1);
 };
+
+function pcmconv(opt = {}, pcmopt) {
+  return new FFmpeg({
+    args: [
+      "-analyzeduration",
+      "0",
+      "-loglevel",
+      "0",
+      "-f",
+      "s16le",
+      "-ac",
+      pcmopt.channels || 2,
+      "-ar",
+      pcmopt.rate || "44100",
+      "-i",
+      "-",
+      "-f",
+      opt.format || "mp3",
+      "-ar",
+      opt.rate || "48000",
+      "-ac",
+      opt.channels || "2",
+      "-ab",
+      `${opt.bitrate || "96"}k`,
+      "-map",
+      "0:a",
+      "-map_metadata",
+      "-1",
+    ]
+  });
+}
 
 if (config.force)
   console.warn("Warning: I'm sure you know what are you doing.");
@@ -220,23 +251,18 @@ let listener = server.listen(config.server.port, config.server.address, () => {
     listener.address().port
   );
 
-  let radio = openradio(config.output);
   function play() {
     let parec = spawn(config.parec_path, config.input);
     parec.on("close", play);
     parec.on("error", (err) => console.error(`[${Date()}]`, err));
     parec.stderr.pipe(process.stderr);
-    radio.playPCM(parec.stdout, config.input);
-  }
-
-  radio.on("data", (chunk) => {
-    if (!header) header = chunk;
-    sink.forEach((res, id) => {
-      res.write(chunk, (err) => {
+    parec.stdout.pipe(pcmconv(config.output, config.input)).on('error', err => console.error(`[${Date()}]`, err)).on('data', chunk => {
+      if (!header) header = chunk;
+      sink.forEach((res, id) => res.write(chunk, err => {
         if (err) sink.delete(id);
-      });
+      }));
     });
-  });
+  }
 
   play();
 });
