@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 const supportedPlatform = ["Linux"];
-const supportedFormats = ["mpegts", "adts", "mp3", "mp2", "s16le"];
 const { spawn } = require("child_process");
 const openradio = require("../");
 const fs = require("fs");
@@ -30,6 +29,7 @@ const config = {
     argv.includes("-force") || argv.includes("--force") || argv.includes("-f"),
 };
 
+let header = null;
 let warn = (text) => {
   console.warn(text);
   process.exit(1);
@@ -41,7 +41,7 @@ let error = (text) => {
 };
 
 if (config.force)
-  console.warn("Warning: I hope you understand what are you doing.");
+  console.warn("Warning: I'm sure you know what are you doing.");
 
 if (!supportedPlatform.includes(require("os").type()) && !config.force) {
   console.log("Sorry. But we may stop here.");
@@ -51,7 +51,7 @@ if (!supportedPlatform.includes(require("os").type()) && !config.force) {
   process.exit(1);
 }
 
-console.log("\nOpenradio Pulseaudio - v1.2 Alpha");
+console.log("\nOpenradio Pulseaudio - v1.3");
 
 argv.forEach(async (key, index) => {
   let value = argv[index + 1];
@@ -96,10 +96,6 @@ argv.forEach(async (key, index) => {
       " --output-format [format]  - Audio output formats (Default: mp3)"
     );
     console.log(
-      "                             Supported Formats:",
-      supportedFormats.join(", ")
-    );
-    console.log(
       "\nTo make this works perfectly, Make sure 'parec' binary is available in your system."
     );
     process.exit(0);
@@ -134,8 +130,6 @@ argv.forEach(async (key, index) => {
         "Supported Formats List:",
         supportedFormats.join(", ")
       );
-    if (!supportedFormats.includes(value) && !config.force)
-      return error('Unsupported Audio Output. See "openradio-pulse -of list"');
     config.output.format = value;
   } else if (["--address", "-address", "-a"].includes(key)) {
     if (!value) return error("Usage: openradio-pulse --address [addr]");
@@ -179,6 +173,7 @@ server.on("request", (req, res) => {
   let id = Math.random();
   let address = req.socket.address();
   res.writeHead(200, { "content-type": "audio/" + config.output.format });
+  res.write(header);
   sink.set(id, res);
   if (config.log)
     console.log(
@@ -235,6 +230,7 @@ let listener = server.listen(config.server.port, config.server.address, () => {
   }
 
   radio.on("data", (chunk) => {
+    if (!header) header = chunk;
     sink.forEach((res, id) => {
       res.write(chunk, (err) => {
         if (err) sink.delete(id);
