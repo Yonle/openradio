@@ -16,7 +16,7 @@ const config = {
     bitrate: 320,
     channels: 2,
     rate: 48000,
-    format: "mp3",
+    format: "wav",
   },
   server: {
     port: 8080,
@@ -27,6 +27,7 @@ const config = {
   daemon: 1,
   force:
     argv.includes("-force") || argv.includes("--force") || argv.includes("-f"),
+  contenttype: null
 };
 
 let header = null;
@@ -39,6 +40,8 @@ let error = (text) => {
   console.error(text);
   process.exit(1);
 };
+
+if (!config.contenttype) config.contenttype = "audio/" + config.output.format;
 
 function pcmconv(opt = {}, pcmopt) {
   return new FFmpeg({
@@ -82,7 +85,7 @@ if (!supportedPlatform.includes(require("os").type()) && !config.force) {
   process.exit(1);
 }
 
-console.log("\nOpenradio Pulseaudio - v1.3");
+console.log("\nOpenradio Pulseaudio - v1.4");
 
 argv.forEach(async (key, index) => {
   let value = argv[index + 1];
@@ -102,6 +105,9 @@ argv.forEach(async (key, index) => {
     console.log(
       " --parec-path [Path]       - Path to parec binary (Default: $PREFIX/bin/parec)"
     );
+    console.log(
+      " --content-type [type]     - Custom content-type header to set in server response"
+    )
     console.log(" --help                    - Show this");
     console.log(" --log                     - Log every HTTP Traffic");
     console.log(" --force                   - Force any actions");
@@ -124,7 +130,7 @@ argv.forEach(async (key, index) => {
       " --output-samplerate [num] - Audio output samplerate (Default: 48000)"
     );
     console.log(
-      " --output-format [format]  - Audio output formats (Default: mp3)"
+      " --output-format [format]  - Audio output formats (Default: wav)"
     );
     console.log(
       "\nTo make this works perfectly, Make sure 'parec' binary is available in your system."
@@ -196,6 +202,9 @@ argv.forEach(async (key, index) => {
       return process.exit(1);
     }
     process.exit();
+  } else if (["--content-type", "-content-type", "-ct"].includes(key)) {
+  	if (!value) return error("Usage: openradio-pulse --content-type [type]");
+  	config.contenttype = value;
   }
 });
 
@@ -203,7 +212,7 @@ server.on("error", (err) => console.error(`[${Date()}]`, err));
 server.on("request", (req, res) => {
   let id = Math.random();
   let address = req.socket.address();
-  res.writeHead(200, { "content-type": "audio/" + config.output.format });
+  res.writeHead(200, { "content-type": config.contenttype || "audio/" + config.output.format });
   if (header) res.write(header);
   sink.set(id, res);
   if (config.log)
@@ -227,16 +236,17 @@ console.log('For more information, do "openradio-pulse -h"\n');
 
 console.log("Configuration:");
 console.log("- Input");
-console.log("  SampleRate:", config.input.rate);
-console.log("  Channels  :", config.input.channels);
+console.log("  SampleRate   :", config.input.rate);
+console.log("  Channels     :", config.input.channels);
 console.log("\n- Output");
-console.log("  SampleRate:", config.output.rate);
-console.log("  Channels  :", config.output.channels);
-console.log("  Bitrate   :", config.output.bitrate);
-console.log("  Format    :", config.output.format);
+console.log("  SampleRate   :", config.output.rate);
+console.log("  Channels     :", config.output.channels);
+console.log("  Bitrate      :", config.output.bitrate);
+console.log("  Format       :", config.output.format);
 console.log("\n- HTTP Server");
-console.log("  Address   :", config.server.address);
-console.log("  Port      :", config.server.port);
+console.log("  Content-Type :", config.contenttype);
+console.log("  Address      :", config.server.address);
+console.log("  Port         :", config.server.port);
 console.log("\nparec Binary path:", config.parec_path);
 if (config.daemon) require("./daemon")();
 console.log("Log Incomming Traffic:", config.log ? "Yes" : "No");
