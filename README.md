@@ -1,37 +1,128 @@
-# openradio
-Let you create your own livestream radio.
+# Table of Content
+- [OpenRadio CLI](#cli)
+  - [Usage](#usage)
+  - [Commands](#commands)
+- [`core`](#core)
+  - [`player.play`](#playerplay)
+  - [`player.playPCM`](#playerplaypcm)
+  - [`player.stream`](#playerstream)
+  - [`player.on`](#playeron)
+  - [`player.finished`](#playerfinished)
+  - [`player.playing`](#playerplaying)
+- [Example](#example)
 
-## Installation
-Before installing OpenRadio, You must have [ffmpeg](https://ffmpeg.org) installed on your system.
+# OpenRadio CLI
+## CLI
+Some openradio CLI that installed with `npm install -g openradio`
+### Usage
 ```bash
-# OpenRadio CLI Installation
-npm install -g openradio
-# OpenRadio Core Installation
-npm install openradio
+openradio [Port] [Directory Path]
 ```
-# Example
+### Commands
+```
+skip - Skip & Play other song
+np - Showing Current playing song name
+q / ls - Showing song name in current folder
+p - Skip & play provided song number
+stop - Stop the player
+logs - Show <HTTP/UDP/TCP> Traffic Logs
+clearlogs - Clear logs
+sink - Show all Sink name
+loop - Loop the current song
+random - Enable Random song fetching
+pause - Pause the radio
+resume - Resume the radio
+```
+# OpenRadio Core
+## `core`
+Main Function of OpenRadio Core to creating new player __(Loaded from `require("openradio")`)__. Returns [`PassThrough`](https://nodejs.org/api/stream.html#stream_class_stream_passthrough)
+#### Parameters (Optional)
+ - `format` Radio audio format (Default: mp3)
+ - `rate` Radio Audio rate (hz) (Default: 48000)
+ - `channels` Radio Audio channels (Default: 2)
+ - `bitrate` Radio Audio bitrate (Default: 96)
+### `player.play`
+A function for playing a song from provided readstream. Returns `Promise`. The promise only resolved when the song ended. This can used for queue system:
+```js
+async function intro () {
+  await player.play(fs.createReadStream("intro_bgm.ogg"));
+  // After 1st song ended, Next...
+  await player.play(fs.createReadStream("info.ogg"));
+  // Then next....
+  await player.play(fs.createReadStream("outro_bgm.ogg"));
+  await player.play(fs.createReadStream("Track 1.mp3"));
+}
+```
+#### Parameters **(Required)**
+  - `ReadStream` (Required) for reading stream.
 ```js
 const openradio = require("openradio");
 const player = openradio();
 
-player.play(fs.createReadStream("audio.mp3"));
-// After this function, A player is now broadcasting a song. 
-// Do player.pipe(writable) after this.
+player.play(fs.createReadStream("song.mp3"));
 ```
+### `player.playPCM`
+Same as [`player.play`](#playerplay). But for playing PCM audio.
 
-#### For OpenRadio CLI
-```bash
-# Go to some directory that contains any audio files....
-cd /home/Yonle/Music
-# Start the radio
-openradio
-# You can also Listen to another Port
-openradio 8080
+### Parameters
+  - `ReadStream` (Required) for reading Stream
+  - `PCM Info` PCM Information
+
+#### `PCM Info`
+  - `rate` Audio Samplerate (Default: 44100)
+  - `channels` Audio Channels (Default: 2)
+  
+### `player.stream`
+A object that returns [Readable Stream](https://nodejs.org/api/stream.html#stream_readable_streams) that created by openradio (Notice: You can't use `pipe` function). Returns `null` if there's nothing playing.
+```js
+const openradio = require("openradio");
+const player = openradio();
+
+player.play(fs.createReadStream("song.mp3"));
+// End the song.
+player.stream.end();
 ```
-## Useful Link
-- [GitHub](https://github.com/Yonle/openradio)
-- [Docs](https://github.com/Yonle/openradio/tree/radio/docs)
-- [Example](https://github.com/Yonle/openradio/tree/radio/example)
+### `player.on` 
+Some event listener for player. [`ReadableStream`](https://nodejs.org/api/stream.html#stream_class_stream_readable) event is also emitted here.
+  - `finish` event returns nothing when radio player finished playing a song.
+  - `error` event returns error if there's a error. Very required in some cases.
+```js
+const openradio = require("openradio");
+const player = openradio();
 
-## Community
-- [Telegram](https://t.me/yonlecoder)
+player.on('error', console.error);
+```
+### `player.finished`
+Some player object statement for knows that the radio player is ended.
+
+```js
+const openradio = require("openradio");
+const player = openradio();
+
+player.finished;
+// Returns false if it's playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
+```
+### `player.playing`
+Some player object statement for knows that the radio player is playing a song.
+```js
+const openradio = require("openradio");
+const player = openradio();
+
+player.playing;
+// Returns false if it's not playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
+```
+## Example
+```js
+const openradio = require("openradio");
+const player = openradio();
+const fs = require("fs");
+
+player.play(fs.createReadStream("song.mp3"));
+
+const http = require("http");
+http.createServer((req, res) => {
+   player.pipe(res);
+}).listen(3000);
+```
+Other example is available at [Example directory](https://github.com/Yonle/openradio/tree/radio/example)
+
