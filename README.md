@@ -30,7 +30,7 @@ openradio 8080
 ```
 ## Useful Link
 - [GitHub](https://github.com/Yonle/openradio)
-- [Docs](https://github.com/Yonle/openradio/tree/radio/docs)
+- [Docs](https://yonle.github.io/openradio)
 - [Example](https://github.com/Yonle/openradio/tree/radio/example)
 
 ## Community
