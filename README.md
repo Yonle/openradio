@@ -40,7 +40,7 @@ Main Function of OpenRadio Core to creating new player __(Loaded from `require("
  - `format` Radio audio format (Default: mp3)
  - `rate` Radio Audio rate (hz) (Default: 48000)
  - `channels` Radio Audio channels (Default: 2)
- - `bitrate` Radio Audio bitrate (Default: 96)
+ - `bitrate` Radio Audio bitrate (Default: 96).
 ### `player.play`
 A function for playing a song from provided readstream. Returns `Promise`. The promise only resolved when the song ended. This can used for queue system:
 ```js
