@@ -15,7 +15,7 @@ const config = {
   output: {
     bitrate: 320,
     channels: 2,
-    rate: 48000,
+    rate: 44100,
     format: "wav",
   },
   server: {
@@ -127,7 +127,7 @@ argv.forEach(async (key, index) => {
       " --output-channels [num]   - Audio output channels (Default: 2)"
     );
     console.log(
-      " --output-samplerate [num] - Audio output samplerate (Default: 48000)"
+      " --output-samplerate [num] - Audio output samplerate (Default: 44100)"
     );
     console.log(
       " --output-format [format]  - Audio output formats (Default: wav)"
