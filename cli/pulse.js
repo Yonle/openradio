@@ -78,7 +78,7 @@ if (config.force)
 if (!supportedPlatform.includes(require("os").type()) && !config.force) {
   console.log("Sorry. But we may stop here.");
   console.log(
-    `\nYour platform (${require("os").type()}) is not supported to ran openradio-pulse. \nIf you wish to continue anyway, Simply do "openradio-pulse -f".`
+    `\nYour platform (${require("os").type()}) is not supported to ran openradio. \nIf you wish to continue anyway, Simply do "openradio -f".`
   );
   process.exit(1);
 }
@@ -89,10 +89,10 @@ argv.forEach(async (key, index) => {
   let value = argv[index + 1];
   if (["--port", "-port", "-p"].includes(key)) {
     if (isNaN(value))
-      return error("Usage: openradio-pulse --port [Port Number]");
+      return error("Usage: openradio --port [Port Number]");
     config.server.port = value;
   } else if (["-h", "-help", "--help"].includes(key)) {
-    console.log("\nUsage: openradio-pulse [options]");
+    console.log("\nUsage: openradio [options]");
     console.log("\nCommon Options:\n");
     console.log(
       " --address [addr]          - IP Address to listen http server from."
@@ -136,38 +136,33 @@ argv.forEach(async (key, index) => {
     process.exit(0);
   } else if (["-prp", "-parec-path", "--parec-path"].includes(key)) {
     if (!value)
-      return error("Usage: openradio-pulse --parec-path [parec binary path]");
+      return error("Usage: openradio --parec-path [parec binary path]");
     config.parec_path = value;
   } else if (
     ["--input-samplerate", "-input-samplerate", , "-ir"].includes(key)
   ) {
-    if (!value) return error("Usage: openradio-pulse --input-samplerate [num]");
+    if (!value) return error("Usage: openradio --input-samplerate [num]");
     config.input.rate = value;
   } else if (["--input-channels", "-input-channels", "-ic"].includes(key)) {
-    if (!value) return error("Usage: openradio-pulse --input-channels [num]");
+    if (!value) return error("Usage: openradio --input-channels [num]");
     config.input.channels = value;
   } else if (["--output-bitrate", "-output-bitrate", "-ob"].includes(key)) {
-    if (!value) return error("Usage: openradio-pulse --output-bitrate [num]");
+    if (!value) return error("Usage: openradio --output-bitrate [num]");
     config.output.bitrate = value;
   } else if (["--output-channels", "-output-channels", "-oc"].includes(key)) {
-    if (!value) return error("Usage: openradio-pulse --output-channels [num]");
+    if (!value) return error("Usage: openradio --output-channels [num]");
     config.output.channels = value;
   } else if (
     ["--output-samplerate", "-output-samplerate", "-or"].includes(key)
   ) {
     if (!value)
-      return error("Usage: openradio-pulse --output-samplerate [num]");
+      return error("Usage: openradio --output-samplerate [num]");
     config.output.rate = value;
   } else if (["--output-format", "-output-format", "-of"].includes(key)) {
-    if (!value) return error("Usage: openradio-pulse --output-format [format]");
-    if (["list", "help"].includes(value))
-      return console.log(
-        "Supported Formats List:",
-        supportedFormats.join(", ")
-      );
+    if (!value) return error("Usage: openradio --output-format [format]");
     config.output.format = value;
   } else if (["--address", "-address", "-a"].includes(key)) {
-    if (!value) return error("Usage: openradio-pulse --address [addr]");
+    if (!value) return error("Usage: openradio --address [addr]");
     config.server.address = value;
   } else if (
     ["--log", "-log", "-l", "-verbose", "--verbose", "-v"].includes(key)
@@ -178,7 +173,7 @@ argv.forEach(async (key, index) => {
   } else if (["--kill", "-kill", "-k"].includes(key)) {
     try {
       let daemons = JSON.parse(
-        fs.readFileSync(process.env.TMPDIR + "/openradio-pulse-daemon.json")
+        fs.readFileSync(process.env.TMPDIR + "/openradio-daemon.json")
       );
       console.log("Killing process " + daemons.pid + "....");
       try {
@@ -188,7 +183,7 @@ argv.forEach(async (key, index) => {
           console.log("Daemon is already die. Removing temporary files....");
         } else error(error);
       }
-      fs.rmSync(process.env.TMPDIR + "/openradio-pulse-daemon.json");
+      fs.rmSync(process.env.TMPDIR + "/openradio-daemon.json");
     } catch (error) {
       if (error.code === "ENOENT") {
         console.error(
@@ -201,7 +196,7 @@ argv.forEach(async (key, index) => {
     }
     process.exit();
   } else if (["--content-type", "-content-type", "-ct"].includes(key)) {
-  	if (!value) return error("Usage: openradio-pulse --content-type [type]");
+  	if (!value) return error("Usage: openradio --content-type [type]");
   	config.contenttype = value;
   }
 });
@@ -232,7 +227,7 @@ server.on("request", (req, res) => {
   });
 });
 
-console.log('For more information, do "openradio-pulse -h"\n');
+console.log('For more information, do "openradio -h"\n');
 
 console.log("Configuration:");
 console.log("- Input");
