@@ -41,8 +41,6 @@ let error = (text) => {
   process.exit(1);
 };
 
-if (!config.contenttype) config.contenttype = "audio/" + config.output.format;
-
 function pcmconv(opt = {}, pcmopt) {
   return new FFmpeg({
     args: [
@@ -207,6 +205,8 @@ argv.forEach(async (key, index) => {
   	config.contenttype = value;
   }
 });
+
+if (!config.contenttype) config.contenttype = "audio/" + config.output.format;
 
 server.on("error", (err) => console.error(`[${Date()}]`, err));
 server.on("request", (req, res) => {
