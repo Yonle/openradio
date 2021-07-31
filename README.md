@@ -1,7 +1,7 @@
 # Table of Content
 - [OpenRadio CLI](#cli)
   - [Usage](#usage)
-  - [Commands](#commands)
+  - [Options](#options)
 - [`core`](#core)
   - [`player.play`](#playerplay)
   - [`player.playPCM`](#playerplaypcm)
@@ -17,23 +17,47 @@
 Some openradio CLI that installed with `npm install -g openradio`
 ### Usage
 ```bash
-openradio [Port] [Directory Path]
+openradio [Options]
 ```
-### Commands
+
+## Options
+Common Options:
+
 ```
-skip - Skip & Play other song
-np - Showing Current playing song name
-q / ls - Showing song name in current folder
-p - Skip & play provided song number
-stop - Stop the player
-logs - Show <HTTP/UDP/TCP> Traffic Logs
-clearlogs - Clear logs
-sink - Show all Sink name
-loop - Loop the current song
-random - Enable Random song fetching
-pause - Pause the radio
-resume - Resume the radio
+ --address [addr]          - IP Address to listen http server from.
+ --port [num]              - Port to listen HTTP request (Default: 8080)
+ --parec-path [Path]       - Path to parec binary (Default: $PREFIX/bin/parec)
+ --content-type [type]     - Custom content-type header to set in server response
+ --help                    - Show this
+ --log                     - Log every HTTP Traffic
+ --force                   - Force any actions
 ```
+
+Daemonize Service:
+
+```
+ --no-daemon               - Do not run as Daemonize Service
+ --kill                    - Kill Daemonize service
+```
+
+Audio Input Options:
+
+```
+ --input-samplerate [num]  - Input Samplerate (Default: 44100)
+ --input-channels [num]    - Input Channels (Default: 2)
+```
+
+Audio Output Options:
+
+```
+ --output-bitrate [num]    - Audio output Bitrate (Default: 320)
+ --output-channels [num]   - Audio output channels (Default: 2)
+ --output-samplerate [num] - Audio output samplerate (Default: 44100)
+ --output-format [format]  - Audio output formats (Default: wav)
+```
+
+To make this works perfectly, Make sure `parec` binary is available in your system.
+
 # OpenRadio Core
 ## `core`
 Main Function of OpenRadio Core to creating new player __(Loaded from `require("openradio")`)__. Returns [`PassThrough`](https://nodejs.org/api/stream.html#stream_class_stream_passthrough)
