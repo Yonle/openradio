@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-console.warn("Warning: openradio-udp is no longer maintained.");
+
 const Throttle = require("throttle");
 const ffmpeg = require("prism-media").FFmpeg;
 const compatibleFormat = require("./compatibleFormat.json");
