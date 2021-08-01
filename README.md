@@ -6,10 +6,10 @@
   - [`player.play`](#playerplay)
   - [`player.playPCM`](#playerplaypcm)
   - [`player.stream`](#playerstream)
+  - [`player.header`](#playerheader)
   - [`player.on`](#playeron)
   - [`player.finished`](#playerfinished)
   - [`player.playing`](#playerplaying)
-- [Other format support](#other-format-support)
 - [Example](#example)
 
 # OpenRadio CLI
@@ -109,6 +109,10 @@ player.play(fs.createReadStream("song.mp3"));
 // End the song.
 player.stream.end();
 ```
+
+## `player.header`
+A buffer of audio header that used to reveal radio audio information such as bitrate, samplerate, and etc so some audio player can understand what & how to do their job quickly. Returns `Buffer`.
+
 ### `player.on` 
 Some event listener for player. [`ReadableStream`](https://nodejs.org/api/stream.html#stream_class_stream_readable) event is also emitted here.
   - `finish` event returns nothing when radio player finished playing a song.
@@ -139,34 +143,6 @@ player.playing;
 // Returns false if it's not playing... Both player.playing and player.ended will return false if there's nothing playing / It's new Player.
 ```
 
-## Other format support
-Some format may supported normally such as `adts` and `mp3`. But some format like `opus`, `wav`, and more requires header so audio player can read the audio metadata as well. To fix this issue, We're gonna cache Header datas at first play.
-
-By example, We're gonna use `oga` format for our broadcast.
-
-```js
-const openradio = require("openradio");
-const { createServer } = require("http");
-const radio = openradio({ format: "oga" });
-// Audio Cache headers
-let header = null;
-
-createServer((req, res) => {
-	res.setHeader("content-type", "audio/oga");
-	// First, Make sure there's a header. if there is, Send.
-	if (header) res.write(header);
-	radio.pipe(res);
-	// ...
-});
-
-// Listen to data event and get it's header
-radio.on('data', data => {
-	if (!header) header = data;
-});
-
-// Do something like playing audio....
-```
-
 ## Example
 
 ```js
@@ -178,6 +154,7 @@ player.play(fs.createReadStream("song.mp3"));
 
 const http = require("http");
 http.createServer((req, res) => {
+   if (player.header) res.write(player.header);
    player.pipe(res);
 }).listen(3000);
 ```
