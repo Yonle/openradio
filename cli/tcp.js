@@ -14,6 +14,7 @@ let stream;
 let host;
 let np;
 let readable;
+let header;
 let logs = [];
 let songnum = 0;
 let loop = false;
@@ -38,6 +39,7 @@ const server = new net.Server((res) => {
     generateId() +
     generateId();
   logs.push(`[${Date()}] New Sink Connected (${id})`);
+  if (header) res.write(header);
   sink.set(id, res);
   res.on("close", () => {
     logs.push(`[${Date()}] Sink (${id}) Disconnected.`);
@@ -109,6 +111,7 @@ console.log("Total Songs in Directory:", manager.readSongs().length);
 
 async function play(n) {
   let song = manager.readSongs();
+  let newSong = 1;
   if (manager.readSongs().length === 0) {
     console.log(
       "There's no songs in this directory. Please put one and try again!"
@@ -146,6 +149,11 @@ async function play(n) {
 
   stream = convert(`${dirname}/${filename}`).pipe(Throttle(24000));
   stream.on("data", (chunk) => {
+    if (header && newSong) return newSong = 0;
+    if (!header && newSong) {
+    	header = chunk;
+    	newSong = 0;
+    }
     sink.forEach((s) => {
       s.write(chunk);
     });

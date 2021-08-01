@@ -62,12 +62,14 @@ function OpenRadio_Core(opt) {
   let Core = new PassThrough();
   let converted = null;
 
+  Core.header = null;
   Core.playing = false;
   Core.finish = false;
   Core.stream = null;
 
   // Player
   Core.play = function ReadStream(readable) {
+    let newStream = 1;
     return new Promise((res, rej) => {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
@@ -82,6 +84,11 @@ function OpenRadio_Core(opt) {
           )
         )
         .on("data", (chunk) => {
+          if (Core.header && newStream) return newStream = 0;
+          if (!Core.header && newStream) {
+          	Core.header = chunk;
+          	newStream = 0;
+          }
           Core.write(chunk);
         })
         .on("end", (e) => {
@@ -104,6 +111,7 @@ function OpenRadio_Core(opt) {
     readable,
     options = { rate: 44100, channels: 2 }
   ) {
+    let newStream = 1;
     return new Promise((res, rej) => {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
@@ -118,6 +126,11 @@ function OpenRadio_Core(opt) {
           )
         )
         .on("data", (chunk) => {
+          if (Core.header && newStream) return newStream = 0;
+          if (!Core.header && newStream) {
+          	Core.header = chunk;
+          	newStream = 0;
+          }
           Core.write(chunk);
         })
         .on("end", (e) => {

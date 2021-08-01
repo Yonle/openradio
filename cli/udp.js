@@ -14,6 +14,7 @@ let stream;
 let np;
 let host;
 let readable;
+let header;
 let logs = [];
 let songnum = 0;
 let loop = false;
@@ -104,6 +105,7 @@ console.log("Total Songs in Directory:", manager.readSongs().length);
 
 async function play(n) {
   let song = manager.readSongs();
+  let newSong = 1;
   if (manager.readSongs().length === 0) {
     console.log(
       "There's no songs in this directory. Please put one and try again!"
@@ -141,6 +143,11 @@ async function play(n) {
 
   stream = convert(`${dirname}/${filename}`).pipe(Throttle(24000));
   stream.on("data", (chunk) => {
+    if (header && newSong) return newSong = 0;
+    if (!header && newSong) {
+    	header = chunk;
+    	newSong = 0;
+    }
     sink.forEach((s, id) => {
       server.send(chunk, 0, chunk.length, s.port, s.address, (err) => {
         if (err) {
