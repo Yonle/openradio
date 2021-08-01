@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "1.1.51",
+  "version": "1.1.51-e",
   "description": "Let you create your own livestream radio.",
   "main": "./core",
   "scripts": {
