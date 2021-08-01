@@ -6,6 +6,7 @@ const fs = require("fs");
 http
   .createServer((req, res) => {
     res.setHeader("content-type", "audio/mp3");
+    if (radio.header) res.write(radio.header);
     radio.pipe(res);
   })
   .listen(3000);
