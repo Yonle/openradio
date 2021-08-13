@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+
+if (!process.env.PREFIX) process.env.PREFIX = "/usr";
+if (!process.env.TMPDIR) process.env.TMPDIR = "/tmp";
 const supportedPlatform = ["Linux"];
 const { spawn } = require("child_process");
 const { FFmpeg } = require("prism-media");
