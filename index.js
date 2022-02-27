@@ -95,6 +95,7 @@ function OpenRadio_Core(opt) {
   Core.playing = false;
   Core.finish = false;
   Core.stream = null;
+  Core.repeater = Function();
 
   // Player
   Core.play = function ReadStream(readable) {
@@ -106,12 +107,13 @@ function OpenRadio_Core(opt) {
         .pipe(convert(opt))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
-          if (Core.header && newStream) return newStream = 0;
+          if (Core.header && newStream) return (newStream = 0);
           if (!Core.header && newStream) {
-          	Core.header = chunk;
-          	newStream = 0;
+            Core.header = chunk;
+            newStream = 0;
           }
           Core.write(chunk);
+          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -141,12 +143,13 @@ function OpenRadio_Core(opt) {
         .pipe(pcmconv(opt, options))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
-          if (Core.header && newStream) return newStream = 0;
+          if (Core.header && newStream) return (newStream = 0);
           if (!Core.header && newStream) {
-          	Core.header = chunk;
-          	newStream = 0;
+            Core.header = chunk;
+            newStream = 0;
           }
           Core.write(chunk);
+          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -174,6 +177,7 @@ function OpenRadio_Video(opt) {
   Core.playing = false;
   Core.finish = false;
   Core.stream = null;
+  Core.repeater = Function();
 
   // Player
   Core.play = function ReadStream(readable) {
@@ -185,12 +189,13 @@ function OpenRadio_Video(opt) {
         .pipe(cvideo(opt))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
-          if (Core.header && newStream) return newStream = 0;
+          if (Core.header && newStream) return (newStream = 0);
           if (!Core.header && newStream) {
-          	Core.header = chunk;
-          	newStream = 0;
+            Core.header = chunk;
+            newStream = 0;
           }
           Core.write(chunk);
+          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -210,5 +215,21 @@ function OpenRadio_Video(opt) {
   return Core;
 }
 
+function repeater(radio) {
+  // Clients
+  let cs = new Set();
+  radio.repeater = (d) =>
+    cs.forEach((c) =>
+      c.write(d, (e) => {
+        if (e) cs.delete(c);
+      })
+    );
+  return (c) => {
+    cs.add(c);
+    return (_) => cs.delete(c);
+  };
+}
+
 module.exports = OpenRadio_Core;
 module.exports.video = OpenRadio_Video;
+module.exports.repeater = repeater;

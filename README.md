@@ -5,7 +5,7 @@ This library **require ffmpeg to be installed in your system/container**.
 
 ## Documentation
 ### module(options)
-A function to create a new converter. Return [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex).
+A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex).
 
 #### Options
 - `format` The radio audio format. Default is `mp3`.
@@ -30,7 +30,7 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 - `finish` A event that emit when finished playing the current song.
 
 ### module.video(options)
-Just like the main function, But instead of audio, It's for Video.
+Just like the main function, But instead of audio, It's for broadcasting Video.
 
 #### Options
 - `format` Radio video format. Default is `mpegts`.
@@ -49,6 +49,29 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 - `error` A event that emit some error when occured.
 - `finish` A event that emit when finished playing the current video.
 
+### module.repeater(radio)
+Simply a repeater for OpenRadio Broadcast. Suitable when you face some performance issue in single duplex. Return a function.
+
+```js
+const fs = require("fs");
+const openradio = require("openradio");
+const radio = openradio(); // Broadcaster
+const repeater = openradio.repeater(radio); // Create a repeater of "radio" broadcaster.
+
+// The repeater is responsible in writting incomming buffer from "radio" broadcaster
+// for multiple WriteableStream at the same time without decreasing "radio" performance.
+
+let r1 = repeater(fs.createWriteStream("stream1.mp3"));
+let r2 = repeater(fs.createWriteStream("stream2.mp3"));
+let r3 = repeater(fs.createWriteStream("stream3.mp3"));
+
+// Assume that we're enough writting buffers to fs.createWriteStream("stream2.mp3")
+// And so we're gonna stop writting.
+r2();
+
+// Even though the repeater stop writting, It's WriteableStream is not ended.
+// So you need to end them manually.
+```
 
 ## Example
 See [`example` folder](https://github.com/Yonle/openradio/tree/radio/example)
