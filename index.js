@@ -95,7 +95,6 @@ function OpenRadio_Core(opt) {
   Core.playing = false;
   Core.finish = false;
   Core.stream = null;
-  Core.repeater = Function();
 
   // Player
   Core.play = function ReadStream(readable) {
@@ -113,7 +112,6 @@ function OpenRadio_Core(opt) {
             newStream = 0;
           }
           Core.write(chunk);
-          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -149,7 +147,6 @@ function OpenRadio_Core(opt) {
             newStream = 0;
           }
           Core.write(chunk);
-          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -177,7 +174,6 @@ function OpenRadio_Video(opt) {
   Core.playing = false;
   Core.finish = false;
   Core.stream = null;
-  Core.repeater = Function();
 
   // Player
   Core.play = function ReadStream(readable) {
@@ -195,7 +191,6 @@ function OpenRadio_Video(opt) {
             newStream = 0;
           }
           Core.write(chunk);
-          Core.repeater(chunk);
         })
         .on("end", (e) => {
           Core.emit("finish", e);
@@ -218,12 +213,13 @@ function OpenRadio_Video(opt) {
 function repeater(radio) {
   // Clients
   let cs = new Set();
-  radio.repeater = (d) =>
+  radio.on('data', d =>
     cs.forEach((c) =>
       c.write(d, (e) => {
         if (e) cs.delete(c);
       })
-    );
+    )
+  );
   return (c) => {
     cs.add(c);
     return (_) => cs.delete(c);

@@ -50,16 +50,16 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 - `finish` A event that emit when finished playing the current video.
 
 ### module.repeater(radio)
-Simply a repeater for OpenRadio Broadcast. Suitable when you face some performance issue in single duplex. Return a function.
+Simply a repeater for [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable). Suitable when you face some performance issue in single duplex. Return a function.
 
 ```js
 const fs = require("fs");
 const openradio = require("openradio");
 const radio = openradio(); // Broadcaster
-const repeater = openradio.repeater(radio); // Create a repeater of "radio" broadcaster.
+const repeater = openradio.repeater(radio); // Create a repeater of "radio" duplex.
 
-// The repeater is responsible in writting incomming buffer from "radio" broadcaster
-// for multiple WriteableStream at the same time without decreasing "radio" performance.
+// The repeater is responsible in writting incomming buffer from "radio" duplex
+// for multiple WriteableStream at the same time without decreasing the duplex performance.
 
 let r1 = repeater(fs.createWriteStream("stream1.mp3"));
 let r2 = repeater(fs.createWriteStream("stream2.mp3"));
