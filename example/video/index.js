@@ -12,11 +12,11 @@ http
     radio.pipe(res);
   })
   .listen(3000);
-  
+
 var { extname } = require("path");
 var list = fs
   .readdirSync("./Video", { withFileTypes: true })
-  .filter(function(item) {
+  .filter(function (item) {
     // Make it returns true
     return (
       item.isFile &&
@@ -27,10 +27,10 @@ var list = fs
         extname(item.name) === ".ogv")
     );
   })
-  .map(videoItem => videoItem.name);
+  .map((videoItem) => videoItem.name);
 
 // Fetch & Play song randomly fron Video Directory!
-radio.play(fs.createReadStream(`./Video/${list[Math.floor(Math.random() * list.length)]}`));
+radio.play(`./Video/${list[Math.floor(Math.random() * list.length)]}`);
 radio.on("finish", () => {
-  radio.play(fs.createReadStream(`./Video/${list[Math.floor(Math.random() * list.length)]}`));
+  radio.play(`./Video/${list[Math.floor(Math.random() * list.length)]}`);
 });

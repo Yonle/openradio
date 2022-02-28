@@ -14,7 +14,7 @@ http
 var { extname } = require("path");
 var list = fs
   .readdirSync("./Music", { withFileTypes: true })
-  .filter(function(item) {
+  .filter(function (item) {
     // Make it returns true
     return (
       item.isFile &&
@@ -30,10 +30,10 @@ var list = fs
         extname(item.name) === ".oga")
     );
   })
-  .map(songItem => songItem.name);
+  .map((songItem) => songItem.name);
 
 // Fetch & Play song randomly fron Music Directory!
-radio.play(fs.createReadStream(`./Music/${list[Math.floor(Math.random() * list.length)]}`));
+radio.play(`./Music/${list[Math.floor(Math.random() * list.length)]}`);
 radio.on("finish", () => {
-  radio.play(fs.createReadStream(`./Music/${list[Math.floor(Math.random() * list.length)]}`));
+  radio.play(`./Music/${list[Math.floor(Math.random() * list.length)]}`);
 });

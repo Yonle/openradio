@@ -138,7 +138,9 @@ function OpenRadio_Core(opt) {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
       Core.stream = readable
-        .pipe(pcmconv(opt, options, typeof readable === "string" ? readable : null))
+        .pipe(
+          pcmconv(opt, options, typeof readable === "string" ? readable : null)
+        )
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -213,7 +215,7 @@ function OpenRadio_Video(opt) {
 function repeater(radio) {
   // Clients
   let cs = new Set();
-  radio.on('data', d =>
+  radio.on("data", (d) =>
     cs.forEach((c) =>
       c.write(d, (e) => {
         if (e) cs.delete(c);
