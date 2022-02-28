@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "1.2.3",
+  "version": "1.2.3-f",
   "description": "Only some simple live stream library",
   "main": "./index.js",
   "scripts": {

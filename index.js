@@ -102,8 +102,7 @@ function OpenRadio_Core(opt) {
     return new Promise((res, rej) => {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
-      Core.stream = readable
-        .pipe(convert(opt, typeof readable === "string" ? readable : null))
+      Core.stream = convert(opt, typeof readable === "string" ? readable : null)
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -122,7 +121,11 @@ function OpenRadio_Core(opt) {
         .on("error", (err) => {
           if (!Core.emit("error", err)) return rej(err);
         });
-      readable.on("error", (err) => Core.emit("error", err));
+
+      if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        readable.on("error", (err) => Core.emit("error", err));
+        readable.pipe(Core.stream);
+      }
       Core.playing = true;
       Core.finish = false;
     });
@@ -137,10 +140,11 @@ function OpenRadio_Core(opt) {
     return new Promise((res, rej) => {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
-      Core.stream = readable
-        .pipe(
-          pcmconv(opt, options, typeof readable === "string" ? readable : null)
-        )
+      Core.stream = pcmconv(
+        opt,
+        options,
+        typeof readable === "string" ? readable : null
+      )
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -159,7 +163,11 @@ function OpenRadio_Core(opt) {
         .on("error", (err) => {
           if (!Core.emit("error", err)) return rej(err);
         });
-      readable.on("error", (err) => Core.emit("error", err));
+
+      if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        readable.on("error", (err) => Core.emit("error", err));
+        readable.pipe(Core.stream);
+      }
       Core.playing = true;
       Core.finish = true;
     });
@@ -183,8 +191,7 @@ function OpenRadio_Video(opt) {
     return new Promise((res, rej) => {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
-      Core.stream = readable
-        .pipe(cvideo(opt, typeof readable === "string" ? readable : null))
+      Core.stream = cvideo(opt, typeof readable === "string" ? readable : null)
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -203,7 +210,10 @@ function OpenRadio_Video(opt) {
         .on("error", (err) => {
           if (!Core.emit("error", err)) return rej(err);
         });
-      readable.on("error", (err) => Core.emit("error", err));
+      if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        readable.on("error", (err) => Core.emit("error", err));
+        readable.pipe(Core.stream);
+      }
       Core.playing = true;
       Core.finish = false;
     });
