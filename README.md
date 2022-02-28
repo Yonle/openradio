@@ -14,8 +14,8 @@ A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.
 - `bitrate` Radio audio bitrate. Default is `192`.
 
 #### Functions
-- `play(ReadableStream)` A function to play audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable).
-- `playPCM(ReadableStream, options)` A function to play PCM audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable). A options include:
+- `play(ReadableStream)` A function to play audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or file path.
+- `playPCM(ReadableStream, options)` A function to play PCM audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or Filepath. A options include:
 
  1. `rate`  The PCM audio bitrate. The default is `44100`.
  2. `channels` The PCM audio channels. The default is `2`.
@@ -42,7 +42,7 @@ Just like the main function, But instead of audio, It's for broadcasting Video.
 - `scale` Radio video scale. Default is `-1:720` means the output video will have a width of 720px and the height will be set based on the ratio of the original video.
 
 #### Functions
-- `play(ReadableStream)` A function to play video from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable).
+- `play(ReadableStream)` A function to play video from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or file path.
 
 #### Events
 Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex) also included here.

@@ -3,7 +3,7 @@ const ffmpeg = require("prism-media").FFmpeg;
 const { PassThrough } = require("stream");
 const events = require("events");
 
-function convert(opt = {}) {
+function convert(opt = {}, url) {
   return new ffmpeg({
     args: [
       "-re",
@@ -12,7 +12,7 @@ function convert(opt = {}) {
       "-loglevel",
       "0",
       "-i",
-      "-",
+      url || "-",
       "-f",
       opt.format || "mp3",
       "-ar",
@@ -29,7 +29,7 @@ function convert(opt = {}) {
   });
 }
 
-function cvideo(opt = {}) {
+function cvideo(opt = {}, url) {
   return new ffmpeg({
     args: [
       "-re",
@@ -38,7 +38,7 @@ function cvideo(opt = {}) {
       "-loglevel",
       "0",
       "-i",
-      "-",
+      url || "-",
       "-vf",
       "scale=" + opt.scale || "-1:720",
       "-f",
@@ -55,7 +55,7 @@ function cvideo(opt = {}) {
   });
 }
 
-function pcmconv(opt = {}, pcmopt) {
+function pcmconv(opt = {}, pcmopt, url) {
   return new ffmpeg({
     args: [
       "-re",
@@ -70,7 +70,7 @@ function pcmconv(opt = {}, pcmopt) {
       "-ar",
       pcmopt.rate || "44100",
       "-i",
-      "-",
+      url || "-",
       "-f",
       opt.format || "mp3",
       "-ar",
@@ -103,7 +103,7 @@ function OpenRadio_Core(opt) {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
       Core.stream = readable
-        .pipe(convert(opt))
+        .pipe(convert(opt, typeof readable === "string" ? readable : null))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -138,7 +138,7 @@ function OpenRadio_Core(opt) {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
       Core.stream = readable
-        .pipe(pcmconv(opt, options))
+        .pipe(pcmconv(opt, options, typeof readable === "string" ? readable : null))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -182,7 +182,7 @@ function OpenRadio_Video(opt) {
       if (Core.stream && "destroyed" in Core.stream && !Core.stream.destroyed)
         Core.stream.destroy();
       Core.stream = readable
-        .pipe(cvideo(opt))
+        .pipe(cvideo(opt, typeof readable === "string" ? readable : null))
         .on("error", (e) => Core.emit("error", e))
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
