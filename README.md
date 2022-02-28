@@ -21,7 +21,8 @@ A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.
  2. `channels` The PCM audio channels. The default is `2`.
  
 #### Objects
- -  `stream` The source of current audio. Return [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable).
+- `stream` The source of current audio. Return [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable).
+- `header` The radio buffer header. 
 
 #### Events
 Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex) also included here.
@@ -38,7 +39,7 @@ Just like the main function, But instead of audio, It's for broadcasting Video.
 - `achannels` Radio video audio channels. Default is `2`.
 - `abitrate` Radio video audio bitrate. Default is `192`.
 - `acodec` Radio video audio codec. Default is `aac`.
-- `size` Radio video resolution. Default is `1280x800`
+- `scale` Radio video scale. Default is `-1:720` means the output video will have a width of 720px and the height will be set based on the ratio of the original video.
 
 #### Functions
 - `play(ReadableStream)` A function to play video from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable).
@@ -48,6 +49,9 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 
 - `error` A event that emit some error when occured.
 - `finish` A event that emit when finished playing the current video.
+
+#### Objects
+Same as the main function.
 
 ### module.repeater(radio)
 Simply a repeater for [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable). Suitable when you face some performance issue in single duplex. Return a function.

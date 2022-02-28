@@ -39,6 +39,8 @@ function cvideo(opt = {}) {
       "0",
       "-i",
       "-",
+      "-vf",
+      "scale=" + opt.scale || "-1:720",
       "-f",
       opt.format || "mpegts",
       "-ar",
@@ -49,8 +51,6 @@ function cvideo(opt = {}) {
       `${opt.abitrate || "192"}k`,
       "-codec:a",
       opt.acodec || "aac",
-      "-s",
-      opt.size || "1280x800",
     ],
   });
 }
