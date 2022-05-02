@@ -1,5 +1,4 @@
-//Openradio Core
-const ffmpeg = require("prism-media").FFmpeg;
+// The Openradio Core
 const { spawn } = require("child_process");
 const { PassThrough } = require("stream");
 const events = require("events");
