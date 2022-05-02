@@ -33,7 +33,7 @@ var list = fs
   .map((songItem) => songItem.name);
 
 // Fetch & Play song randomly fron Music Directory!
-radio.play(`./Music/${list[Math.floor(Math.random() * list.length)]}`);
+radio.play(fs.createReadStream(`./Music/${list[Math.floor(Math.random() * list.length)]}`));
 radio.on("finish", () => {
   radio.play(`./Music/${list[Math.floor(Math.random() * list.length)]}`);
 });
