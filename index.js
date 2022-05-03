@@ -38,7 +38,7 @@ function cvideo(opt = {}, url) {
     "-i",
     url || "-",
     "-vf",
-    "scale=" + opt.scale || "-1:720",
+    "scale=" + (opt.scale || "-1:720"),
     "-f",
     opt.format || "mpegts",
     "-ar",

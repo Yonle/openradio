@@ -3,11 +3,12 @@ const radio = openradio();
 const http = require("http");
 const fs = require("fs");
 
+let repeater = openradio.repeater(radio);
 http
   .createServer((req, res) => {
     res.setHeader("content-type", "audio/mp3");
     if (radio.header) res.write(radio.header);
-    radio.pipe(res);
+    repeater(res);
   })
   .listen(3000);
 

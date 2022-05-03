@@ -6,10 +6,11 @@ const radio = openradio.video();
 const http = require("http");
 const fs = require("fs");
 
+let repeater = openradio.repeater(radio);
 http
   .createServer((req, res) => {
     res.setHeader("content-type", "video/ts");
-    radio.pipe(res);
+    repeater(res);
   })
   .listen(3000);
 
