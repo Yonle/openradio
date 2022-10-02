@@ -1,7 +1,7 @@
 # openradio
-Only some simple live stream library.
+A simple live streaming library written in JavaScript with ffmpeg.
 
-This library **require ffmpeg to be installed in your system/container**.
+This library **require [ffmpeg](https://ffmpeg.org) to be installed in your system/container**.
 
 ## Documentation
 ### module(options)
@@ -30,11 +30,14 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 - `error` A event that emit some error when occured.
 - `finish` A event that emit when finished playing the current song.
 
-### module.video(options)
+### module.video(options, rtmp_url)
 Just like the main function, But instead of audio, It's for broadcasting Video.
+
+- `rtmp_url` RTMP url to stream.
 
 #### Options
 - `format` Radio video format. Default is `mpegts`.
+- `vcodec` Radio video codec. This is different from `format` option. Default is `mpeg2video`.
 - `arate` Radio video audio samplerate. Default is `44100`.
 - `achannels` Radio video audio channels. Default is `2`.
 - `abitrate` Radio video audio bitrate. Default is `192`.

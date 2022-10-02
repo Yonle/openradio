@@ -28,7 +28,12 @@ function convert(opt = {}, url) {
   ]);
 }
 
-function cvideo(opt = {}, url) {
+function cvideo(opt = {}, url, rtmp_url) {
+  if (rtmp_url) {
+    opt.format = "flv";
+    opt.vcodec = "libx264";
+  }
+
   return spawn("ffmpeg", [
     "-re",
     "-analyzeduration",
@@ -39,17 +44,21 @@ function cvideo(opt = {}, url) {
     url || "-",
     "-vf",
     "scale=" + (opt.scale || "-1:720"),
+    "-preset",
+    "veryfast",
     "-f",
     opt.format || "mpegts",
+    "-codec:v",
+    opt.vcodec || "mpeg2video",
     "-ar",
     opt.arate || "44100",
     "-ac",
     opt.achannels || "2",
     "-ab",
-    `${opt.abitrate || "192"}k`,
+    `${opt.abitrate || "128"}k`,
     "-codec:a",
     opt.acodec || "aac",
-    "pipe:1",
+    rtmp_url ? rtmp_url : "pipe:1",
   ]);
 }
 
@@ -96,9 +105,13 @@ function OpenRadio_Core(opt) {
   // Player
   Core.play = function ReadStream(readable) {
     let newStream = 1;
+    if (Core.stream && !Core.stream.killed) {
+      Core.stream.stdout.removeAllListeners("end");
+      Core.stream.kill();
+      if (Core.stream.__readableStream) Core.stream.__readableStream.destroy();
+      Core.__res();
+    }
     return new Promise((res, rej) => {
-      if (Core.stream && "exitCode" in Core.stream && !Core.stream.exitCode)
-        Core.stream.kill();
       Core.stream = convert(
         opt,
         typeof readable === "string" ? readable : null
@@ -124,11 +137,13 @@ function OpenRadio_Core(opt) {
       });
 
       if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        Core.stream.__readableStream = readable;
         readable.on("error", (err) => Core.emit("error", err));
         readable.pipe(Core.stream.stdin);
       }
       Core.playing = true;
       Core.finish = false;
+      Core.__res = res;
     });
   };
 
@@ -138,9 +153,13 @@ function OpenRadio_Core(opt) {
     options = { rate: 44100, channels: 2 }
   ) {
     let newStream = 1;
+    if (Core.stream && !Core.stream.killed) {
+      Core.stream.stdout.removeAllListeners("end");
+      Core.stream.kill();
+      if (Core.stream.__readableStream) Core.stream.__readableStream.destroy();
+      Core.__res();
+    }
     return new Promise((res, rej) => {
-      if (Core.stream && "exitCode" in Core.stream && !Core.stream.exitCode)
-        Core.stream.kill();
       Core.stream = pcmconv(
         opt,
         options,
@@ -166,18 +185,20 @@ function OpenRadio_Core(opt) {
       });
 
       if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        Core.stream.__readableStream = readable;
         readable.on("error", (err) => Core.emit("error", err));
         readable.pipe(Core.stream.stdin);
       }
       Core.playing = true;
       Core.finish = true;
+      Core.__res = res;
     });
   };
 
   return Core;
 }
 
-function OpenRadio_Video(opt) {
+function OpenRadio_Video(opt, rtmp_url) {
   let Core = new PassThrough();
   let converted = null;
 
@@ -189,10 +210,14 @@ function OpenRadio_Video(opt) {
   // Player
   Core.play = function ReadStream(readable) {
     let newStream = 1;
+    if (Core.stream && !Core.stream.killed) {
+      Core.stream.stdout.removeAllListeners("end");
+      Core.stream.kill();
+      if (Core.stream.__readableStream) Core.stream.__readableStream.destroy();
+      Core.__res();
+    }
     return new Promise((res, rej) => {
-      if (Core.stream && "exitCode" in Core.stream && !Core.stream.exitCode)
-        Core.stream.kill();
-      Core.stream = cvideo(opt, typeof readable === "string" ? readable : null);
+      Core.stream = cvideo(opt, typeof readable === "string" ? readable : null, rtmp_url);
       Core.stream.stdout
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
@@ -211,12 +236,15 @@ function OpenRadio_Video(opt) {
       Core.stream.on("error", (err) => {
         if (!Core.emit("error", err)) return rej(err);
       });
+
       if (typeof readable !== "string" && typeof readable.pipe === "function") {
+        Core.stream.__readableStream = readable;
         readable.on("error", (err) => Core.emit("error", err));
         readable.pipe(Core.stream.stdin);
       }
       Core.playing = true;
       Core.finish = false;
+      Core.__res = res;
     });
   };
 
