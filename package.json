@@ -1,6 +1,6 @@
 {
   "name": "openradio",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "A simple live streaming library written in JavaScript with ffmpeg.",
   "main": "./index.js",
   "scripts": {
