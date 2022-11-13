@@ -1,17 +1,10 @@
 {
   "name": "openradio",
-  "version": "1.4.0",
+  "version": "1.4.1",
   "description": "A simple live streaming library written in JavaScript with ffmpeg.",
   "main": "./index.js",
   "scripts": {
     "test": "node ./index.js"
-  },
-  "bin": {
-    "openradio": "./cli/pulse.js",
-    "openradio-tcp": "./cli/tcp.js",
-    "openradio-udp": "./cli/udp.js",
-    "openradio-http": "./cli/http.js",
-    "openradio-pulse": "./cli/pulse.js"
   },
   "author": "Yonle",
   "license": "BSD-3-Clause",
