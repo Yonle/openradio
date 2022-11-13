@@ -221,7 +221,11 @@ function OpenRadio_Video(opt, rtmp_url) {
       Core.__res();
     }
     return new Promise((res, rej) => {
-      Core.stream = cvideo(opt, typeof readable === "string" ? readable : null, rtmp_url);
+      Core.stream = cvideo(
+        opt,
+        typeof readable === "string" ? readable : null,
+        rtmp_url
+      );
       Core.stream.stdout
         .on("data", (chunk) => {
           if (Core.header && newStream) return (newStream = 0);
