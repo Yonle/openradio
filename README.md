@@ -4,7 +4,7 @@ A simple live streaming library written in JavaScript with ffmpeg.
 This library **require [ffmpeg](https://ffmpeg.org) to be installed in your system/container**.
 
 ## Documentation
-### module(options)
+### `module(options)`
 A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex).
 
 #### Options
@@ -16,7 +16,7 @@ A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.
 
 #### Functions
 - `play(ReadableStream)` A function to play audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or file path.
-- `playPCM(ReadableStream, options)` A function to play PCM audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or Filepath. A options include:
+- `playPCM(ReadableStream, options)` A function to play PCM audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or Filepath. Available options:
 
  1. `rate`  The PCM audio bitrate. The default is `44100`.
  2. `channels` The PCM audio channels. The default is `2`.
@@ -31,7 +31,7 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 - `error` A event that emit some error when occured.
 - `finish` A event that emit when finished playing the current song.
 
-### module.video(options, rtmp_url)
+### `module.video(options, rtmp_url)`
 Just like the main function, But instead of audio, It's for broadcasting Video.
 
 - `rtmp_url` RTMP url to stream.
@@ -57,7 +57,7 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 #### Objects
 Same as the main function.
 
-### module.repeater(radio)
+### `module.repeater(radio)`
 Simply a repeater for [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable). Suitable when you face some performance issue in single duplex. Return a function.
 
 ```js
