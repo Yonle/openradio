@@ -1,12 +1,12 @@
 {
   "name": "openradio",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "description": "A simple live streaming library written in JavaScript with ffmpeg.",
   "main": "./index.js",
   "scripts": {
     "test": "node ./index.js"
   },
-  "author": "Yonle",
+  "author": "Yonle <yonle@lecturify.net>",
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",

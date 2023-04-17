@@ -12,6 +12,7 @@ A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.
 - `rate` Radio audio samplerate. Default is `44100`.
 - `channels` Radio audio channels. Default is `2`.
 - `bitrate` Radio audio bitrate. Default is `192`.
+- `acodec` Radio audio codec. Default is `mp3`.
 
 #### Functions
 - `play(ReadableStream)` A function to play audio from [`ReadableStream`](https://nodejs.org/api/stream.html#class-streamreadable) or "string". A string could be a URL, or file path.
@@ -85,11 +86,10 @@ See [`example` folder](https://github.com/Yonle/openradio/tree/radio/example)
 
 ## Community
 - [Telegram](https://t.me/yonlecoder)
-- [Matrix Yonle space](https://matrix.to/#/#yonle:matrix.org)
-- #yonle at libera.chat, tilde.chat, oftc.net, IRCNow.org.
+- #yonle at irc.lecturify.net.
 
 ## License
-Copyright 2022 Yonle <yonle@duck.com>
+Copyright 2023 Yonle <yonle@lecturify.net>
 
 Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
 
