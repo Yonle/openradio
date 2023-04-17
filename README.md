@@ -4,6 +4,23 @@ A simple live streaming library written in JavaScript with ffmpeg.
 This library **require [ffmpeg](https://ffmpeg.org) to be installed in your system/container**.
 
 ## Documentation
+
+- [`module(options)`](#moduleoptions)
+  - [Options](#options)
+  - [`play(ReadableStream)`](#functions)
+  - [`playPCM(ReadableStream, options)`](#functions)
+  - [Objects](#objects)
+    - [`stream`](#objects)
+    - [`header`](#objects)
+  - [Events](#events)
+- [`module.video(options, rtmp_url)`](#modulevideooptions-rtmp_url)
+  - [Options](#options-1)
+  - [`play(ReadableStream)`](#functions-1)
+  - [Events](#events-1)
+  - [Objects](#objects)
+    - [`stream`](#objects)
+    - [`header`](#objects)
+
 ### `module(options)`
 A function to create a new broadcaster. Return [`stream.Duplex`](https://nodejs.org/api/stream.html#class-streamduplex).
 
@@ -34,7 +51,7 @@ Some of events from [`stream.Duplex`](https://nodejs.org/api/stream.html#class-s
 ### `module.video(options, rtmp_url)`
 Just like the main function, But instead of audio, It's for broadcasting Video.
 
-- `rtmp_url` RTMP url to stream.
+- `rtmp_url` RTMP url to stream (Optional).
 
 #### Options
 - `format` Radio video format. Default is `mpegts`.
